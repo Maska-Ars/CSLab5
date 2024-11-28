@@ -55,8 +55,8 @@ class Program
             Console.WriteLine("5 - Добавление элемента");
             Console.WriteLine("6 - Запрос для получения суммарной выручки за указанный период от указанного экспоната");
             Console.WriteLine("7 - Запрос для получение суммарной выручки от экспонатов казанной эры, за указанный промежуток времени");
-            Console.WriteLine("8 - Запрос на полчение информации о песетителях, посетивших указанный экспонат, из указанного города, за указанный промежуток");
-            Console.WriteLine("9 - Запрос на получение информации о пометителях указанного возраста, посетивших указанный экспонат");
+            Console.WriteLine("8 - Запрос на полчение информации о песетителях, посетивших указанный экспонат, из указанного города, за указанный промежуток времени");
+            Console.WriteLine("9 - Запрос на получение информации о посетителях указанного возраста, посетивших указанный экспонат");
             Console.WriteLine("10 - Выход из программы");
             Console.WriteLine("11 - Очистить консоль");
             Console.WriteLine();
@@ -135,12 +135,12 @@ class Program
 
                     string attr = UserInput.StringInput("Введите название атрибута: ");
 
-                    string val = UserInput.StringInput("Введите новое значение атрибута");
+                    string val = UserInput.StringInput("Введите новое значение атрибута: ");
 
                     try
                     {
                         db.UpdateElbyId(table, id, attr, val);
-                        Console.WriteLine("Элемент успешно удален из базы данных");
+                        Console.WriteLine("Элемент успешно изменен в базе данных");
                     }
                     catch (Exception ex)
                     {
@@ -164,7 +164,7 @@ class Program
                     Console.WriteLine("2 - посетителя");
                     Console.WriteLine("3 - билет");
 
-                    Console.Write("Выберите, что хотите добавить:");
+                    Console.Write("Выберите, что хотите добавить: ");
                     string? s = Console.ReadLine();
 
                     switch(s)
@@ -311,7 +311,7 @@ class Program
 
                     int age = UserInput.intInput(true, "Введите возраст: ");
 
-                    era = UserInput.StringInput("Введите эпоху");
+                    era = UserInput.StringInput("Введите эпоху: ");
 
                     var k = db.Request4(age, era);
 
