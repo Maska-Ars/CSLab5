@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +18,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 class DataBase
 {
     private string file;
-    private Workbook wb;
+
+    private List<Exhibit> exhibits;
+    private List<Visitor> visitors;
+    private List<Ticket> tickets;
 
     public DataBase(string file)
     {
@@ -28,126 +33,301 @@ class DataBase
         if (!file.EndsWith(".xls"))
             throw new Exception("Тип файла должен быть xls!");
 
-        this.wb = new Workbook(file);
+        Workbook wb = new Workbook(file);
+
+        exhibits = new List<Exhibit>();
+
+        Worksheet ws = wb.Worksheets[0];
+
+        for (int i = 1; i <= ws.Cells.MaxDataRow; i++)
+        {
+            Row row = ws.Cells.Rows[i];
+
+            exhibits.Add(new Exhibit(
+                row[0].IntValue,
+                row[1].StringValue,
+                row[2].StringValue
+                ));
+
+        }
+
+        visitors = new List<Visitor>();
+
+        ws = wb.Worksheets[1];
+
+        for (int i = 1; i <= ws.Cells.MaxDataRow; i++)
+        {
+            Row row = ws.Cells.Rows[i];
+
+            visitors.Add(new Visitor(
+                row[0].IntValue,
+                row[1].StringValue,
+                row[2].IntValue,
+                row[3].StringValue
+                ));
+
+        }
+
+        tickets = new List<Ticket>();
+
+        ws = wb.Worksheets[2];
+
+        for (int i = 1; i <= ws.Cells.MaxDataRow; i++)
+        {
+            Row row = ws.Cells.Rows[i];
+
+            tickets.Add(new Ticket(
+                row[0].IntValue,
+                row[1].IntValue,
+                row[2].IntValue,
+                row[3].DateTimeValue,
+                row[4].IntValue
+                ));
+
+        }
+
+
     }
 
-    public void DelElById(string tableName, int id)
+    public string GetFile() => this.file;
+
+    public void DelExhibitById(int id)
     {
-        var worksheets = from w in wb.Worksheets
-                         where w.Name == tableName
-                         select w;
+        var tic = from Ticket t in tickets
+                  where t.GetIdExhibit() == id
+                  select t;
 
-        if (worksheets.Count() == 0)
-            throw new Exception($"таблицы с названием '{tableName}' не существеут");
+        foreach (var t in tic)
+        {
+            this.DelTickettById(t.GetId());
+        }
 
-        Worksheet ws = worksheets.First();
+        var exs = from Exhibit e in exhibits
+                  where id == e.GetId()
+                  select e;
+        if (exs.Count() == 0)
+            throw new Exception($"экспоната с id = {id} не существеут");
 
-        var rows = from Row r in ws.Cells.Rows
-                   where r[0].IsNumericValue && r[0].IntValue == id
-                   select r;
+        exhibits.Remove(exhibits.First());
 
-        if (rows.Count() == 0)
-            throw new Exception($"объекта с id = {id} не существеут");
+        exs = from Exhibit e in exhibits
+              where id < e.GetId()
+              select e;
 
-        Row row = rows.First();
+        foreach (Exhibit e in exs)
+        {
+            e.SetId(e.GetId() - 1);
+        }
 
-        rows = from Row r in ws.Cells.Rows
-               where r.Index > row.Index
-               select r;
-
-        foreach (Row r in rows)
-            r[0].Value = r[0].IntValue - 1;
-
-        ws.Cells.DeleteRow(row.Index);
-
-        wb.Save(file);
     }
 
-    public void UpdateElbyId(string tableName, int id, string attributeName, string newValue)
+    public void DelVisitorById(int id)
     {
-        var worksheets = from w in wb.Worksheets
-                         where w.Name == tableName
-                         select w;
+        var tic = from Ticket t in tickets
+                  where t.GetIdVisitor() == id
+                  select t;
 
-        Worksheet ws = worksheets.First();
+        foreach (var t in tic)
+        {
+            this.DelTickettById(t.GetId());
+        }
 
-        var columns = from column in ws.Cells.Columns
-                      where ws.Cells[0, column.Index].StringValue == attributeName
-                      select column;
+        var exs = from Visitor e in visitors
+                  where id == e.GetId()
+                  select e;
+        if (exs.Count() == 0)
+            throw new Exception($"посетителя с id = {id} не существеут");
 
-        int col = columns.First().Index;
+        exhibits.Remove(exhibits.First());
 
-        var rows = from Row r in ws.Cells.Rows
-                   where r[0].IsNumericValue && r[0].IntValue == id
-                   select r;
+        exs = from Visitor e in visitors
+              where id < e.GetId()
+              select e;
 
-        Row row = rows.First();
+        foreach (Visitor e in exs)
+        {
+            e.SetId(e.GetId() - 1);
+        }
 
-        if (row[col].Type == CellValueType.IsNumeric)
-            row[col].Value = Int32.Parse(newValue);
-        else if (row[col].Type == CellValueType.IsDateTime)
-            row[col].Value = DateTime.Parse(newValue);
-        else if (row[col].Type == CellValueType.IsString)
-            row[col].Value = newValue;
+    }
 
-        wb.Save(file);
+    public void DelTickettById(int id)
+    {
+        var exs = from Ticket e in tickets
+                  where id == e.GetId()
+                  select e;
+        if (exs.Count() == 0)
+            throw new Exception($"билета с id = {id} не существеут");
+
+        exhibits.Remove(exhibits.First());
+
+        exs = from Ticket e in tickets
+              where id < e.GetId()
+              select e;
+
+        foreach (Ticket e in exs)
+        {
+            e.SetId(e.GetId() - 1);
+        }
+
+    }
+
+    public void DelElById(int idTable, int id)
+    {
+        if (idTable < 0 || idTable > 2)
+            throw new Exception($"таблицы с id '{idTable}' не существеут");
+
+        switch(id)
+        {
+            case 0:
+                this.DelExhibitById(id);
+                break;
+            case 1:
+                this.DelVisitorById(id);
+                break;
+            case 2:
+                this.DelTickettById(id);
+                break;
+        }
+
+        this.Save();
+    }
+
+    public void UpdateExhibitById(int id, string AttributeName, string newValue)
+    {
+        var exs = from Exhibit e in exhibits
+                  where id == e.GetId()
+                  select e;
+        if (exs.Count() == 0)
+            throw new Exception($"экспоната с id = {id} не существеут");
+
+        Exhibit ex = exs.First();
+
+        switch(AttributeName)
+        {
+            case "name":
+                ex.SetName(newValue);
+                break;
+            case "era":
+                ex.SetEra(newValue);
+                break;
+            default:
+                throw new Exception($"атрибут с названием = {AttributeName} не существеут");
+        }
+
+    }
+
+    public void UpdateVisitorById(int id, string AttributeName, string newValue)
+    {
+        var exs = from Visitor e in visitors
+                  where id == e.GetId()
+                  select e;
+        if (exs.Count() == 0)
+            throw new Exception($"посетителя с id = {id} не существеут");
+
+        Visitor ex = exs.First();
+
+        switch (AttributeName)
+        {
+            case "name":
+                ex.SetName(newValue);
+                break;
+            case "age":
+                ex.SetAge(Convert.ToInt32(newValue));
+                break;
+            case "city":
+                ex.SetCity(newValue);
+                break;
+            default:
+                throw new Exception($"атрибут с названием = {AttributeName} не существеут");
+        }
+
+    }
+
+    public void UpdateTicketById(int id, string AttributeName, string newValue)
+    {
+        var exs = from Ticket e in tickets
+                  where id == e.GetId()
+                  select e;
+        if (exs.Count() == 0)
+            throw new Exception($"экспоната с id = {id} не существеут");
+
+        Ticket ex = exs.First();
+
+        switch (AttributeName)
+        {
+            case "idExhibit":
+                ex.SetIdExhibit(Convert.ToInt32(newValue));
+                break;
+            case "idVisitor":
+                ex.SetIdVisitor(Convert.ToInt32(newValue));
+                break;
+            case "price":
+                ex.SetPrice(Convert.ToInt32(newValue));
+                break;
+            case "time":
+                ex.SetTime(Convert.ToDateTime(newValue));
+                break;
+            default:
+                throw new Exception($"атрибут с названием = {AttributeName} не существеут");
+        }
+
+    }
+
+    public void UpdateElbyId(int idTable, int id, string attributeName, string newValue)
+    {
+        if (idTable < 0 || idTable > 2)
+            throw new Exception($"таблицы с id '{idTable}' не существеут");
+
+        switch(idTable)
+        {
+            case 0:
+                this.UpdateExhibitById(id, attributeName, newValue);
+                break;
+            case 1:
+                this.UpdateVisitorById(id, attributeName, newValue);
+                break;
+            case 2:
+                this.UpdateTicketById(id, attributeName, newValue);
+                break;
+        }
+
+        this.Save();
     }
 
     public void AddExhibit(string name, string era)
     {
-        Worksheet ws = wb.Worksheets[0];
-        ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
-        Row row = ws.Cells.Rows[ws.Cells.Rows.Count - 1];
-
-        row[0].Value = row.Index;
-        row[1].Value = name;
-        row[2].Value = era;
-
-        wb.Save(file);
+        exhibits.Add(new Exhibit(
+            exhibits[-1].GetId() + 1,
+            name,
+            era
+            ));
+        this.Save();
     }
 
     public void AddVisitor(string name, int age, string city)
     {
-        Worksheet ws = wb.Worksheets[1];
-        ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
-        Row row = ws.Cells.Rows[ws.Cells.Rows.Count - 1];
+        visitors.Add(new Visitor(
+            visitors[-1].GetId() + 1,
+            name,
+            age,
+            city
+            ));
+        this.Save();
 
-        row[0].Value = row.Index;
-        row[1].Value = name;
-        row[2].Value = age;
-        row[3].Value = city;
-
-        wb.Save(file);
     }
 
     public void AddTicket(int idExhibit, int idVisitor, DateTime time, int price)
     {
-        Worksheet ws = wb.Worksheets[0];
-        ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
-        Row row = ws.Cells.Rows[ws.Cells.Rows.Count - 1];
+        tickets.Add(new Ticket(
+            tickets[-1].GetId() + 1,
+            idExhibit,
+            idVisitor,
+            time,
+            price
+            ));
+        this.Save();
 
-        var RowIdEx = from Row r in wb.Worksheets[0].Cells.Rows
-                      where r[0].IntValue == idExhibit
-                      select r;
-
-        if (RowIdEx.Count() == 0)
-            throw new Exception($"экспоната с id = {idExhibit} не существеут");
-
-        var RowIdVis = from Row r in wb.Worksheets[1].Cells.Rows
-                       where r[0].IntValue == idVisitor
-                       select r;
-
-        if (RowIdVis.Count() == 0)
-            throw new Exception($"посетителя с id = {idVisitor} не существеут");
-
-
-        row[0].Value = row.Index;
-        row[1].Value = idExhibit;
-        row[2].Value = idVisitor;
-        row[3].Value = time;
-        row[4].Value = price;
-
-        wb.Save(file);
     }
 
     public int Request1(int idExhibit, DateTime? begin = null, DateTime? end = null)
@@ -158,13 +338,12 @@ class DataBase
         if (end == null)
             end = DateTime.Today;
 
-        var prices = from Row r in wb.Worksheets[2].Cells.Rows
+        var prices = from Ticket r in tickets
                      where
-                        r[1].Type == CellValueType.IsNumeric
-                        && r[1].IntValue == idExhibit
-                        && r[3].DateTimeValue >= begin
-                        && r[3].DateTimeValue <= end
-                     select r[4].IntValue;
+                        r.GetIdExhibit() == idExhibit
+                        && r.GetTime() >= begin
+                        && r.GetTime() <= end
+                     select r.GetPrice();
 
         return prices.Sum();
     }
@@ -177,13 +356,13 @@ class DataBase
         if (end == null)
             end = DateTime.Today;
 
-        var prices = from Row r1 in wb.Worksheets[2].Cells.Rows
-                     join Row r2 in wb.Worksheets[0].Cells.Rows on r1[1].Value equals r2[0].Value
+        var prices = from Ticket r1 in tickets
+                     join Exhibit r2 in exhibits on r1.GetIdExhibit() equals r2.GetId()
                      where
-                        r2[2].StringValue == era
-                        && r1[3].DateTimeValue >= begin
-                        && r1[3].DateTimeValue <= end
-                     select r1[4].IntValue;
+                        r2.GetEra() == era
+                        && r1.GetTime() >= begin
+                        && r1.GetTime() <= end
+                     select r1.GetPrice();
 
         return prices.Sum();
     }
@@ -198,20 +377,19 @@ class DataBase
         if (end == null)
             end = DateTime.Today;
 
-        var people = from Row rT in wb.Worksheets[2].Cells.Rows
-                     join Row rEx in wb.Worksheets[0].Cells.Rows on rT[1].Value equals rEx[0].Value
-                     join Row rV in wb.Worksheets[1].Cells.Rows on rT[2].Value equals rV[0].Value
+        var people = from Ticket rT in tickets
+                     join Exhibit rEx in exhibits on rT.GetIdExhibit() equals rEx.GetId()
+                     join Visitor rV in visitors on rT.GetIdVisitor() equals rV.GetId()
                      where
-                        rEx[0].Type == CellValueType.IsNumeric
-                        && rEx[0].IntValue == idExhibit
-                        && rV[3].StringValue == city
-                        && rT[1].DateTimeValue >= begin
-                        && rT[3].DateTimeValue <= end
+                        rEx.GetId() == idExhibit
+                        && rV.GetCity() == city
+                        && rT.GetTime() >= begin
+                        && rT.GetTime() <= end
                      select new {
-                         id = rT[0].IntValue,
-                         name = rV[1].StringValue,
-                         age = rV[2].IntValue,
-                         price = rT[4].IntValue
+                         idTicket = rT.GetId(),
+                         name = rV.GetName(),
+                         age = rV.GetAge(),
+                         price = rT.GetPrice()
                      };
         return people;
     }
@@ -219,87 +397,309 @@ class DataBase
     public IEnumerable<object> Request4(int age, string era)
     {
         // запрос на получение id, имен, времени посещения экспонатов данной эпохи, посетителями данного возраста
-        var people = from Row rT in wb.Worksheets[2].Cells.Rows
-                     join Row rEx in wb.Worksheets[0].Cells.Rows on rT[1].Value equals rEx[0].Value
-                     join Row rV in wb.Worksheets[1].Cells.Rows on rT[2].Value equals rV[0].Value
+        var people = from Ticket rT in tickets
+                     join Exhibit rEx in exhibits on rT.GetIdExhibit() equals rEx.GetId()
+                     join Visitor rV in visitors on rT.GetIdVisitor() equals rV.GetId()
                      where
-                        rV[2].Type == CellValueType.IsNumeric
-                        && rV[2].IntValue == age
-                        && rEx[2].StringValue == era
+                        rV.GetAge() == age
+                        && rEx.GetEra() == era
                      select new
                      {
-                         name = rV[1].StringValue,
-                         idTicket = rT[0].IntValue,
-                         date = rT[3].DateTimeValue
+                         name = rV.GetName(),
+                         idTicket = rT.GetId(),
+                         date = rT.GetTime()
                      };
         return people;
     }
 
-    public string GetFile()
+    public void Save()
     {
-        return this.file;
+
+        Workbook wb = new Workbook(file);
+
+        Worksheet ws = wb.Worksheets[0];
+
+        Style s1 = ws.Cells.Rows[1][0].GetDisplayStyle();
+        Style s2 = ws.Cells.Rows[1][1].GetDisplayStyle();
+        Style s3 = ws.Cells.Rows[1][2].GetDisplayStyle();
+
+        ws.Cells.DeleteRows(1, ws.Cells.Rows.Count-1);
+
+
+        foreach (Exhibit e in exhibits)
+        {
+            ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
+
+            ws.Cells.Rows[^1][0].SetStyle(s1);
+            ws.Cells.Rows[^1][0].PutValue(e.GetId());
+
+            ws.Cells.Rows[^1][1].SetStyle(s2);
+            ws.Cells.Rows[^1][1].PutValue(e.GetName());
+
+            ws.Cells.Rows[^1][2].SetStyle(s3);
+            ws.Cells.Rows[^1][2].PutValue(e.GetEra());
+
+        }
+
+        ws = wb.Worksheets[1];
+        s1 = ws.Cells.Rows[1][0].GetDisplayStyle();
+        s2 = ws.Cells.Rows[1][1].GetDisplayStyle();
+        s3 = ws.Cells.Rows[1][2].GetDisplayStyle();
+        Style s4 = ws.Cells.Rows[1][3].GetDisplayStyle();
+        ws.Cells.DeleteRows(1, ws.Cells.Rows.Count - 1);
+
+        foreach (Visitor e in visitors)
+        {
+            ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
+
+            ws.Cells.Rows[^1][0].SetStyle(s1);
+            ws.Cells.Rows[^1][0].PutValue(e.GetId());
+
+            ws.Cells.Rows[^1][1].SetStyle(s2);
+            ws.Cells.Rows[^1][1].PutValue(e.GetName());
+
+            ws.Cells.Rows[^1][2].SetStyle(s3);
+            ws.Cells.Rows[^1][2].PutValue(e.GetAge());
+
+            ws.Cells.Rows[^1][3].SetStyle(s4);
+            ws.Cells.Rows[^1][3].PutValue(e.GetCity());
+        }
+
+        ws = wb.Worksheets[2];
+
+        s1 = ws.Cells.Rows[1][0].GetDisplayStyle();
+        s2 = ws.Cells.Rows[1][1].GetDisplayStyle();
+        s3 = ws.Cells.Rows[1][2].GetDisplayStyle();
+        s4 = ws.Cells.Rows[1][3].GetDisplayStyle();
+        Style s5 = ws.Cells.Rows[1][4].GetDisplayStyle();
+
+        ws.Cells.DeleteRows(1, ws.Cells.Rows.Count - 1);
+
+        foreach (Ticket e in tickets)
+        {
+            ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
+
+            ws.Cells.Rows[^1][0].SetStyle(s1);
+            ws.Cells.Rows[^1][0].PutValue(e.GetId());
+
+            ws.Cells.Rows[^1][1].SetStyle(s2);
+            ws.Cells.Rows[^1][1].PutValue(e.GetIdExhibit());
+
+            ws.Cells.Rows[^1][2].SetStyle(s3);
+            ws.Cells.Rows[^1][2].PutValue(e.GetIdVisitor());
+
+            ws.Cells.Rows[^1][3].SetStyle(s4);
+            ws.Cells.Rows[^1][3].PutValue(e.GetTime());
+
+            ws.Cells.Rows[^1][4].SetStyle(s5);
+            ws.Cells.Rows[^1][4].PutValue(e.GetPrice());
+        }
+
+        wb.Save("save"+file);
+
     }
 
     public override string ToString()
     {
         string s = "";
-        WorksheetCollection col = wb.Worksheets;
+        
+        int[] maxLength = new int[3];
 
-        for (int i = 0; i < 3; i++)
+        var k = from Exhibit e in exhibits
+                select e.GetId().ToString().Length;
+        maxLength[0] = k.Max();
+
+        k = from Exhibit e in exhibits
+            select e.GetName().Length;
+        maxLength[1] = k.Max();
+
+        k = from Exhibit e in exhibits
+            select e.GetEra().Length;
+        maxLength[2] = k.Max();
+
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+        s += "|";
+        for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Экспонаты".Length) / 2; j++)
+            s += " ";
+
+        s += "Экспонаты";
+
+        for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Экспонаты".Length) / 2 - 1; j++)
+            s += " ";
+        s += "|";
+        s += "\n";
+
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+        foreach (Exhibit e in exhibits)
         {
-            Worksheet ws = col[i];
-
-            int rows = ws.Cells.MaxDataRow;
-            int cols = ws.Cells.MaxDataColumn;
-
-            int[] maxLength = new int[cols+1];
-            for (int j = 0; j <= cols; j++)
-            {
-                var k = from Row r in ws.Cells.Rows
-                        select r[j].StringValue.Length;
-                maxLength[j] = k.Max();
-            }
-
-            for (int j = 0; j < maxLength.Sum() + cols * 2 + 3; j++)
-                s += "-";
-            s += "\n";
-
             s += "|";
-            for (int j = 0; j < (maxLength.Sum() + cols * 2 + 3 - ws.Name.Length) / 2; j++)
-                s += " ";
+            string space = "";
+            for (int l = 0; l < maxLength[0] - e.GetId().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetId().ToString()} |";
 
-            s += ws.Name;
+            space = "";
+            for (int l = 0; l < maxLength[1] - e.GetName().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetName()} |";
 
-            for (int j = 0; j < (maxLength.Sum() + cols * 2 + 3 - ws.Name.Length) / 2 - 1; j++)
-                s += " ";
-            s += "|";
+            space = "";
+            for (int l = 0; l < maxLength[2] - e.GetEra().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetEra()} |";
             s += "\n";
-
-            for (int j = 0; j < maxLength.Sum() + cols * 2 + 3; j++)
-                s += "-";
-            s += "\n";
-
-            for (int j = 0; j <= rows; j++)
-            {
-                s += "|";
-                for (int k = 0; k <= cols; k++)
-                {
-                    string space = "";
-                    for (int l = 0; l < maxLength[k] - ws.Cells[j, k].StringValue.Length; l++)
-                        space += " ";
-
-                    if (ws.Cells[j, k].Type == CellValueType.IsDateTime)
-                        s += $"{space}{ws.Cells[j, k].DateTimeValue.ToShortDateString()} |";
-                    else
-                        s += $"{space}{ws.Cells[j, k].StringValue} |";
-                }
-                s += "\n";
-            }
-            for (int j = 0; j < maxLength.Sum() + cols * 2 + 3; j++)
-                s += "-";
-            s += "\n";
-
         }
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+
+        maxLength = new int[4];
+
+        k = from Visitor e in visitors
+            select e.GetId().ToString().Length;
+        maxLength[0] = k.Max();
+
+        k = from Visitor e in visitors
+            select e.GetName().Length;
+        maxLength[1] = k.Max();
+
+        k = from Visitor e in visitors
+            select e.GetAge().ToString().Length;
+        maxLength[2] = k.Max();
+
+        k = from Visitor e in visitors
+            select e.GetCity().Length;
+        maxLength[3] = k.Max();
+
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+        s += "|";
+        for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Посетители".Length) / 2; j++)
+            s += " ";
+
+        s += "Посетители";
+
+        for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Посетители".Length) / 2 - 1; j++)
+            s += " ";
+        s += "|";
+        s += "\n";
+
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+        foreach (Visitor e in visitors)
+        {
+            s += "|";
+            string space = "";
+            for (int l = 0; l < maxLength[0] - e.GetId().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetId().ToString()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[1] - e.GetName().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetName()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[2] - e.GetAge().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetAge()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[3] - e.GetCity().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetCity()} |";
+            s += "\n";
+        }
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+
+        maxLength = new int[5];
+
+        k = from Ticket e in tickets
+            select e.GetId().ToString().Length;
+        maxLength[0] = k.Max();
+
+        k = from Ticket e in tickets
+            select e.GetIdExhibit().ToString().Length;
+        maxLength[1] = k.Max();
+
+        k = from Ticket e in tickets
+            select e.GetIdVisitor().ToString().Length;
+        maxLength[2] = k.Max();
+
+        k = from Ticket e in tickets
+            select e.GetTime().ToShortDateString().Length;
+        maxLength[3] = k.Max();
+
+        k = from Ticket e in tickets
+            select e.GetPrice().ToString().Length;
+        maxLength[4] = k.Max();
+
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+        s += "|";
+        for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Билеты".Length) / 2; j++)
+            s += " ";
+
+        s += "Билеты";
+
+        for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Билеты".Length) / 2 - 1; j++)
+            s += " ";
+        s += "|";
+        s += "\n";
+
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
+        foreach (Ticket e in tickets)
+        {
+            s += "|";
+            string space = "";
+            for (int l = 0; l < maxLength[0] - e.GetId().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetId().ToString()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[1] - e.GetIdExhibit().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetIdExhibit()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[2] - e.GetIdVisitor().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetIdVisitor()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[3] - e.GetTime().ToShortDateString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetTime().ToShortDateString()} |";
+
+            space = "";
+            for (int l = 0; l < maxLength[2] - e.GetPrice().ToString().Length; l++)
+                space += " ";
+            s += $"{space}{e.GetPrice()} |";
+            s += "\n";
+        }
+        for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
+            s += "-";
+        s += "\n";
+
 
         return s;
     }

@@ -10,9 +10,12 @@ class Program
         Console.Write("1 - да: ");
         string? fi = Console.ReadLine();
         string filep = "protocol.txt";
-        if (fi != "1") 
+        if (fi != "1" || !File.Exists(filep)) 
         {
             bool bb = false;
+            if (!File.Exists(filep))
+                Console.WriteLine("Стнадартного файла не существует.");
+
             while (!bb)
             {
                 filep = UserInput.StringInput("Введите название нового файла: ");
@@ -39,7 +42,7 @@ class Program
         Protocoler pr = new Protocoler(filep);
         pr.WriteLine("Программа запущенна");
         pr.Save();
-
+        
         DataBase db = new DataBase("LR5-var3.xls");
         
         bool userContinue = true;
@@ -59,6 +62,7 @@ class Program
             Console.WriteLine("9 - Запрос на получение информации о посетителях указанного возраста, посетивших указанный экспонат");
             Console.WriteLine("10 - Выход из программы");
             Console.WriteLine("11 - Очистить консоль");
+            Console.WriteLine("12 - Сохранение базы данных");
             Console.WriteLine();
             Console.Write("Введите номер функции: ");
             string? userInput = Console.ReadLine();
@@ -102,7 +106,7 @@ class Program
                     pr.WriteLine("Вызвана функция 3");
                     pr.Save();
 
-                    string table = UserInput.StringInput("Введите название таблицы: ");
+                    int table = UserInput.intInput(true, "Введите id таблицы: ");
 
                     int id = UserInput.intInput(true, "Введите id элемента: ");
 
@@ -121,7 +125,7 @@ class Program
                     }
                     Console.WriteLine();
                     break;
-
+                    
                 case "4":
                     Console.WriteLine("Функция 4");
                     Console.WriteLine();
@@ -129,7 +133,7 @@ class Program
                     pr.WriteLine("Вызвана функция 4");
                     pr.Save();
 
-                    table = UserInput.StringInput("Введите название таблицы: ");
+                    table = UserInput.intInput(true, "Введите id таблицы: ");
 
                     id = UserInput.intInput(true, "Введите id элемента: ");
 
@@ -334,6 +338,10 @@ class Program
 
                     pr.WriteLine("Консоль очищена");
                     pr.Save();
+                    break;
+
+                case "12":
+                    db.Save();
                     break;
 
                 default:
