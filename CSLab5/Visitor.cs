@@ -1,38 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-class Visitor
+﻿namespace CSLab5
 {
-    private int id;
-    private string name;
-    private int age;
-    private string city;
-
-    public Visitor(int id, string name, int age, string city)
+    class Visitor(int id, string name, int age, string city)
     {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.city = city;
+        private int _id = id;
+        private string _name = name;
+        private int _age = age;
+        private string _city = city;
+
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public int Age
+        {
+            get { return _age; }
+            set { _age = value; }
+        }
+
+        public string City
+        {
+            get { return _city; }
+            set { _city = value; }
+        }
+
+        public override string ToString()
+        {
+            return $"id = {_id}, name = {_name}, age = {_age}, city = {_city}";
+        }
     }
 
-    public int GetId() => id;
-    public void SetId(int id) => this.id = id;
-
-    public string GetName() => name;
-    public void SetName(string Name) => this.name = Name;
-
-    public int GetAge() => age;
-    public void SetAge(int age) => this.age = age;
-
-    public string GetCity() => city;
-    public void SetCity(string city) => this.city = city;
-
-    public override string ToString()
-    {
-        return $"id = {id}, name = {name}, age = {age}, city = {city}";
-    }
 }

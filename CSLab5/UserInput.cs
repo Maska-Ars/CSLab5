@@ -1,165 +1,75 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
-
-class UserInput
+﻿class UserInput
 {
-    public static string StringInput(string text = "Введите строку")
+    public static string StringInput(string prompt = "Введите строку: ")
     {
-        string? user_input = "";
+        string? userInput;
 
-        bool b = false;
-
-        while (b != true)
+        do
         {
-            Console.Write(text);
-            user_input = Console.ReadLine();
-            if (user_input == "" || user_input == null) 
+            Console.Write(prompt);
+            userInput = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(userInput))
             {
-                Console.WriteLine("Строка не дожна быть пустой!");
-                b = false;
+                Console.WriteLine("Строка не должна быть пустой!");
             }
             else
             {
-                b = true;
+                return userInput;
             }
+        } while (string.IsNullOrEmpty(userInput));
 
-        }
-        return user_input;
+        return userInput;
     }
 
-    // Для ввода целых чисел
-    public static int intInput(bool isPositive = false, string text = "Введите целое число: ")
+    public static int IntInput(bool isPositive = false, string prompt = "Введите целое число: ")
     {
-        string user_input = "";
-        bool b = false;
+        string? userInput;
+        bool isValidInput = false;
+        int result = 0;
 
-        while (b != true)
+        while (!isValidInput)
         {
-            Console.Write(text);
-            user_input = Console.ReadLine();
-            b = int.TryParse(user_input, out int result2);
-            if (b && isPositive)
+            Console.Write(prompt);
+            userInput = Console.ReadLine();
+
+            if (int.TryParse(userInput, out result))
             {
-                int i = int.Parse(user_input);
-                if (i < 0)
+                if (isPositive && result < 0)
                 {
-                    b = false;
                     Console.WriteLine("Число должно быть положительным!");
-                }
-            }
-            else if (!b) { Console.WriteLine("Введенное значение не является целым числом!"); }
-        }
-        return int.Parse(user_input);
-    }
-
-    // Для ввода дробных чисел
-    public static double doubleInput(bool isPositive = false, string text = "Введите целое число: ")
-    {
-        string user_input = "";
-        bool b = false;
-
-        while (b != true)
-        {
-            Console.Write(text);
-            user_input = Console.ReadLine();
-            b = double.TryParse(user_input, out double result2);
-            if (b && isPositive)
-            {
-                double i = double.Parse(user_input);
-                if (i < 0)
-                {
-                    b = false;
-                    Console.WriteLine("Число должно быть положительным!");
-                }
-            }
-            else if (!b) { Console.WriteLine("Введенное значение не является целым числом!"); }
-        }
-        return double.Parse(user_input);
-    }
-
-    public static DateTime DateTimeInput(string text = "Введите дату: ")
-    {
-        string? user_input = "";
-        bool b = false;
-
-        while (b != true)
-        {
-            Console.Write(text);
-            user_input = Console.ReadLine();
-
-            b = DateTime.TryParse(user_input, out DateTime result2);
-            if (!b) { Console.WriteLine("Введенное значение не является датой!"); }
-        }
-        return DateTime.Parse(user_input);
-    }
-
-    // Для ввода 1 символа
-    public static char charInput()
-    {
-        Console.Write("Введите символ: ");
-        string user_input = Console.ReadLine();
-        while (user_input.Length > 1 || user_input.Length == 0)
-        {
-            Console.Write("Введите 1 символ!: ");
-            user_input = Console.ReadLine();
-        }
-        return user_input[0];
-
-    }
-
-    // Для ввода массива заданной длинны и случайными числами
-    public static int[] randomArrInput()
-    {
-        int arr_size = intInput(true, "Введите размер массива: ");
-        int[] arr = new int[arr_size];
-        Random rand = new Random();
-        for (int i = 0; i < arr_size; i++)
-        {
-            arr[i] = rand.Next(-arr_size, arr_size);
-        }
-
-        return arr;
-    }
-
-    // Для ввода массива
-    public static double[] ArrInput(int size, string text = "Введите элементы массива через пробел: ")
-    {
-        Console.Write(text);
-        string s = Console.ReadLine();
-
-        string[] split_s = s.Split(' ');
-        double[] arr_d = new double[size];
-
-
-        bool b = true;
-
-        while (b)
-        {
-            b = false;
-            if (split_s.Length != size)
-            {
-                Console.WriteLine($"Количество элементов в строке должно быть равно {size}");
-                b = true;
-            }
-
-            for (int i = 0; i < size; i++)
-            {
-                if (double.TryParse(split_s[i], out double result))
-                {
-                    arr_d[i] = result;
                 }
                 else
                 {
-                    Console.WriteLine("В строке должны быть только числа типа double или пробелы");
-                    b = true;
+                    isValidInput = true;
                 }
             }
+            else
+            {
+                Console.WriteLine("Введенное значение не является целым числом!");
+            }
         }
-
-
-        return arr_d;
+        return result;
     }
 
+    public static DateTime DateTimeInput(string prompt = "Введите дату: ")
+    {
+        DateTime result;
+        bool isValid;
 
+        do
+        {
+            Console.Write(prompt);
+            string? userInput = Console.ReadLine();
+
+            isValid = DateTime.TryParse(userInput, out result);
+
+            if (!isValid)
+            {
+                Console.WriteLine("Введенное значение не является датой!");
+            }
+        } while (!isValid);
+
+        return result;
+    }
 }

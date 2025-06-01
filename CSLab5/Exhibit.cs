@@ -1,34 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-class Exhibit
+﻿namespace CSLab5
 {
-    private int id;
-    private string name;
-    private string era;
-
-    public Exhibit(int id, string name, string era)
+    class Exhibit(int id, string name, string era)
     {
-        this.id = id;
-        this.name = name;
-        this.era = era;
+        private int _id = id;
+        private string _name = name;
+        private string _era = era;
+
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public string Era
+        {
+            get { return _era; }
+            set { _era = value; }
+        }
+
+        public override string ToString()
+        {
+            return $"id = {_id}, name = {_name}, era = {_era}";
+        }
+
     }
-
-    public int GetId() => id;
-    public void SetId(int id) => this.id = id;
-
-    public string GetName() => name;
-    public void SetName(string name) => this.name = name;
-
-    public string GetEra() => era;
-    public void SetEra(string era) => this.era = era;
-
-    public override string ToString()
-    {
-        return $"id = {id}, name = {name}, era = {era}";
-    }
-
 }

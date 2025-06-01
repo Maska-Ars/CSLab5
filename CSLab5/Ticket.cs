@@ -1,43 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-class Ticket
+﻿namespace CSLab5
 {
-    private int id;
-    private int idExhibit;
-    private int idVisitor;
-    private DateTime time;
-    private int price;
-
-    public Ticket(int id, int idExhibit, int idVisitor, DateTime time, int price)
+    class Ticket(int id, int idExhibit, int idVisitor, DateTime time, int price)
     {
-        this.id = id;
-        this.idExhibit = idExhibit;
-        this.idVisitor = idVisitor;
-        this.time = time;
-        this.price = price;
-    }
+        private int _id = id;
+        private int _idExhibit = idExhibit;
+        private int _idVisitor = idVisitor;
+        private DateTime _time = time;
+        private int _price = price;
 
-    public int GetId() => id;
-    public void SetId(int id) => this.id = id;
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
-    public int GetIdExhibit() => idExhibit;
-    public void SetIdExhibit(int idExhibit) => this.idExhibit = idExhibit;
+        public int IdExhibit
+        {
+            get { return _idExhibit; }
+            set { _idExhibit = value; }
+        }
 
-    public int GetIdVisitor() => idVisitor;
-    public void SetIdVisitor(int idVisitor) => this.idVisitor = idVisitor;
+        public int IdVisitor
+        {
+            get { return _idVisitor; }
+            set { _idVisitor = value; }
+        }
 
-    public DateTime GetTime() => time;
-    public void SetTime(DateTime time) => this.time = time;
+        public DateTime Time
+        {
+            get { return _time; }
+            set { _time = value; }
+        }
 
-    public int GetPrice() => price;
-    public void SetPrice(int price) => this.price = price;
+        public int Price
+        {
+            get { return _price; }
+            set { _price = value; }
+        }
 
-    public override string ToString()
-    {
-        return $"id = {id}, idEx = {idExhibit}, idV = {idVisitor}, time = {time}, price = {price}";
+        public override string ToString()
+        {
+            return $"id = {_id}, idEx = {_idExhibit}, idV = {_idVisitor}, time = {_time}, price = {_price}";
+        }
     }
 }

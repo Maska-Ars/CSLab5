@@ -1,39 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-class Protocoler
+﻿namespace CSLab5 
 {
-    private string file;
-    private StreamWriter sw;
-
-    public Protocoler(string file = "Protocol.txt") 
+    class Protocoler
     {
-        if (!File.Exists(file))
-            throw new Exception("Файла с заданным путем не существет!");
+        private string _file;
+        private StreamWriter _sw;
 
-        if (!file.EndsWith(".txt"))
-            throw new Exception("Тип файла должен быть txt!");
+        public Protocoler(string file = "Protocol.txt")
+        {
+            if (!File.Exists(file))
+                throw new Exception("Файла с заданным путем не существет!");
 
-        this.file = file;
-        this.sw = new StreamWriter(file, true);
-    }
+            if (!file.EndsWith(".txt"))
+                throw new Exception("Тип файла должен быть txt!");
 
-    public void WriteLine(string s)
-    {
-        sw.WriteLine($"{DateTime.Now} - {s}");
-    }
+            _file = file;
+            _sw = new StreamWriter(file, true);
+        }
 
-    public void Save()
-    {
-        sw.Close();
-        sw = new StreamWriter(file, true);
-    }
+        public void WriteLine(string s)
+        {
+            _sw.WriteLine($"{DateTime.Now} - {s}");
+        }
 
-    public void Close() 
-    {
-        sw.Close();
+        public void Save()
+        {
+            _sw.Close();
+            _sw = new StreamWriter(_file, true);
+        }
+
+        public void Close()
+        {
+            _sw.Close();
+        }
     }
 }

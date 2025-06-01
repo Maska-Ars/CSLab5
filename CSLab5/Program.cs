@@ -1,353 +1,356 @@
-﻿using Aspose.Cells;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata;
-
-class Program
+﻿namespace CSLab5
 {
-    public static void Main()
+    class Program
     {
-        Console.WriteLine("Протокол дописывать в старый файл?");
-        Console.Write("1 - да: ");
-        string? fi = Console.ReadLine();
-        string filep = "protocol.txt";
-        if (fi != "1" || !File.Exists(filep)) 
+        public static void Main()
         {
-            bool bb = false;
-            if (!File.Exists(filep))
-                Console.WriteLine("Стнадартного файла не существует.");
-
-            while (!bb)
+            Console.WriteLine("Протокол дописывать в старый файл?");
+            Console.Write("1 - да: ");
+            string? fi = Console.ReadLine();
+            string protocolFile = "protocol.txt";
+            if (fi != "1" || !File.Exists(protocolFile)) 
             {
-                filep = UserInput.StringInput("Введите название нового файла: ");
+                bool bb = false;
+                if (!File.Exists(protocolFile))
+                    Console.WriteLine("Стнадартного файла не существует.");
 
-                if (!filep.EndsWith(".txt"))
+                while (!bb)
                 {
-                    Console.WriteLine("Файл должен иметь расширение txt!");
-                    continue;
-                }
+                    protocolFile = UserInput.StringInput("Введите название нового файла: ");
+
+                    if (!protocolFile.EndsWith(".txt"))
+                    {
+                        Console.WriteLine("Файл должен иметь расширение txt!");
+                        continue;
+                    }
                    
-
-                try
-                {
-                    File.Create(filep);
-                    bb = true;
+                    try
+                    {
+                        File.Create(protocolFile);
+                        bb = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Произошла ошибка: {ex}");
+                    }        
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Произошла ошибка: {ex}");
-                }        
             }
-        }
-        Console.Clear();
-        Protocoler pr = new Protocoler(filep);
-        pr.WriteLine("Программа запущенна");
-        pr.Save();
+            Console.Clear();
+            Protocoler protocoler = new(protocolFile);
+
+            protocoler.WriteLine("Программа запущенна");
+            protocoler.Save();
         
-        DataBase db = new DataBase("LR5-var3.xls");
+            DataBase db = new("LR5-var3.xls");
         
-        bool userContinue = true;
-        while (userContinue) 
-        {
-            Console.WriteLine("Главное меню");
-            Console.WriteLine($"Текущий файл: {db.GetFile()}");
-            Console.WriteLine("Функции:");
-            Console.WriteLine("1 - Чтение базы данных из excel файла");
-            Console.WriteLine("2 - Просмотр базы данных");
-            Console.WriteLine("3 - Удаление элемента по ключу");
-            Console.WriteLine("4 - Корректировка элемента по ключу");
-            Console.WriteLine("5 - Добавление элемента");
-            Console.WriteLine("6 - Запрос для получения суммарной выручки за указанный период от указанного экспоната");
-            Console.WriteLine("7 - Запрос для получение суммарной выручки от экспонатов казанной эры, за указанный промежуток времени");
-            Console.WriteLine("8 - Запрос на полчение информации о песетителях, посетивших указанный экспонат, из указанного города, за указанный промежуток времени");
-            Console.WriteLine("9 - Запрос на получение информации о посетителях указанного возраста, посетивших указанный экспонат");
-            Console.WriteLine("10 - Выход из программы");
-            Console.WriteLine("11 - Очистить консоль");
-            Console.WriteLine("12 - Сохранение базы данных");
-            Console.WriteLine();
-            Console.Write("Введите номер функции: ");
-            string? userInput = Console.ReadLine();
-            switch (userInput)
+            bool userContinue = true;
+            while (userContinue) 
             {
-                case "1":
-                    Console.WriteLine("функция 1");
+                Console.WriteLine("Главное меню");
+                Console.WriteLine($"Текущий файл: {db.File}");
+                Console.WriteLine("Функции:");
+                Console.WriteLine("1 - Чтение базы данных из excel файла");
+                Console.WriteLine("2 - Просмотр базы данных");
+                Console.WriteLine("3 - Удаление элемента по ключу");
+                Console.WriteLine("4 - Корректировка элемента по ключу");
+                Console.WriteLine("5 - Добавление элемента");
+                Console.WriteLine("6 - Запрос для получения суммарной выручки за указанный период от указанного экспоната");
+                Console.WriteLine("7 - Запрос для получение суммарной выручки от экспонатов казанной эры, за указанный промежуток времени");
+                Console.WriteLine(
+                    "8 - Запрос на полчение информации о песетителях, посетивших указанный экспонат, " +
+                    "из указанного города, за указанный промежуток времени"
+                    );
+                Console.WriteLine("9 - Запрос на получение информации о посетителях указанного возраста, посетивших указанный экспонат");
+                Console.WriteLine("10 - Выход из программы");
+                Console.WriteLine("11 - Очистить консоль");
+                Console.WriteLine("12 - Сохранение базы данных");
+                Console.WriteLine();
+                Console.Write("Введите номер функции: ");
+                string? userInput = Console.ReadLine();
 
-                    pr.WriteLine("Вызвана функция 1");
-                    pr.Save();
+                switch (userInput)
+                {
+                    case "1":
+                        Console.WriteLine("функция 1");
 
-                    string file = UserInput.StringInput("Введите путь к файлу: ");
-                    try
-                    {
-                        db = new DataBase(file);
-                        Console.WriteLine("База данных успешно прочитана");
-                    }
-                    catch (Exception ex) 
-                    {
-                        Console.WriteLine(ex.Message);
+                        protocoler.WriteLine("Вызвана функция 1");
+                        protocoler.Save();
 
-                        pr.WriteLine($"В функции 1 произошда ошибка: {ex.Message}");
-                        pr.Save();
+                        string file = UserInput.StringInput("Введите путь к файлу: ");
+                        try
+                        {
+                            db = new DataBase(file);
+                            Console.WriteLine("База данных успешно прочитана");
+                        }
+                        catch (Exception ex) 
+                        {
+                            Console.WriteLine(ex.Message);
 
-                    }
-                    Console.WriteLine();
-                    break;
+                            protocoler.WriteLine($"В функции 1 произошда ошибка: {ex.Message}");
+                            protocoler.Save();
 
-                case "2":
-                    Console.WriteLine("База данных: ");
-                    Console.WriteLine(db);
+                        }
+                        Console.WriteLine();
+                        break;
 
-                    pr.WriteLine("Вызвана функция 2");
-                    pr.Save();
-                    break;
+                    case "2":
+                        Console.WriteLine("База данных: ");
+                        Console.WriteLine(db);
 
-                case "3":
-                    Console.WriteLine("Функция 3");
-                    Console.WriteLine();
+                        protocoler.WriteLine("Вызвана функция 2");
+                        protocoler.Save();
+                        break;
 
-                    pr.WriteLine("Вызвана функция 3");
-                    pr.Save();
+                    case "3":
+                        Console.WriteLine("Функция 3");
+                        Console.WriteLine();
 
-                    int table = UserInput.intInput(true, "Введите id таблицы: ");
+                        protocoler.WriteLine("Вызвана функция 3");
+                        protocoler.Save();
 
-                    int id = UserInput.intInput(true, "Введите id элемента: ");
+                        int table = UserInput.IntInput(true, "Введите id таблицы: ");
 
-                    try
-                    {
-                        db.DelElById(table, id);
-                        Console.WriteLine("Элемент успешно удален из базы данных");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
+                        int id = UserInput.IntInput(true, "Введите id элемента: ");
 
-                        pr.WriteLine($"В функции 3 произошда ошибка: {ex.Message}");
-                        pr.Save();
+                        try
+                        {
+                            db.DelElById(table, id);
+                            Console.WriteLine("Элемент успешно удален из базы данных");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
 
-                    }
-                    Console.WriteLine();
-                    break;
+                            protocoler.WriteLine($"В функции 3 произошда ошибка: {ex.Message}");
+                            protocoler.Save();
+
+                        }
+                        Console.WriteLine();
+                        break;
                     
-                case "4":
-                    Console.WriteLine("Функция 4");
-                    Console.WriteLine();
+                    case "4":
+                        Console.WriteLine("Функция 4");
+                        Console.WriteLine();
 
-                    pr.WriteLine("Вызвана функция 4");
-                    pr.Save();
+                        protocoler.WriteLine("Вызвана функция 4");
+                        protocoler.Save();
 
-                    table = UserInput.intInput(true, "Введите id таблицы: ");
+                        table = UserInput.IntInput(true, "Введите id таблицы: ");
 
-                    id = UserInput.intInput(true, "Введите id элемента: ");
+                        id = UserInput.IntInput(true, "Введите id элемента: ");
 
-                    string attr = UserInput.StringInput("Введите название атрибута: ");
+                        string attr = UserInput.StringInput("Введите название атрибута: ");
 
-                    string val = UserInput.StringInput("Введите новое значение атрибута: ");
+                        string val = UserInput.StringInput("Введите новое значение атрибута: ");
 
-                    try
-                    {
-                        db.UpdateElbyId(table, id, attr, val);
-                        Console.WriteLine("Элемент успешно изменен в базе данных");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
+                        try
+                        {
+                            db.UpdateElbyId(table, id, attr, val);
+                            Console.WriteLine("Элемент успешно изменен в базе данных");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
 
-                        pr.WriteLine($"В функции 4 произошда ошибка: {ex.Message}");
-                        pr.Save();
+                            protocoler.WriteLine($"В функции 4 произошда ошибка: {ex.Message}");
+                            protocoler.Save();
 
-                    }
-                    Console.WriteLine();
-                    break;
+                        }
+                        Console.WriteLine();
+                        break;
 
-                case "5":
-                    Console.WriteLine("Функция 5");
-                    Console.WriteLine();
+                    case "5":
+                        Console.WriteLine("Функция 5");
+                        Console.WriteLine();
 
-                    pr.WriteLine("Вызвана функция 5");
-                    pr.Save();
+                        protocoler.WriteLine("Вызвана функция 5");
+                        protocoler.Save();
 
-                    Console.WriteLine("1 - экспонат");
-                    Console.WriteLine("2 - посетителя");
-                    Console.WriteLine("3 - билет");
+                        Console.WriteLine("1 - экспонат");
+                        Console.WriteLine("2 - посетителя");
+                        Console.WriteLine("3 - билет");
 
-                    Console.Write("Выберите, что хотите добавить: ");
-                    string? s = Console.ReadLine();
+                        Console.Write("Выберите, что хотите добавить: ");
+                        string? s = Console.ReadLine();
 
-                    switch(s)
-                    {
-                        case "1":
-                            Console.WriteLine("Добаление экспоната");
+                        switch(s)
+                        {
+                            case "1":
+                                Console.WriteLine("Добаление экспоната");
 
-                            string name = UserInput.StringInput("Введите название экспоната: ");
+                                string name = UserInput.StringInput("Введите название экспоната: ");
 
-                            string era1 = UserInput.StringInput("Введите эпозху: ");
+                                string era1 = UserInput.StringInput("Введите эпозху: ");
 
-                            try
-                            {
-                                db.AddExhibit(name, era1);
-                                Console.WriteLine("Экспонат успешно добавлен");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"{ex.Message}");
-                                pr.WriteLine($"В функции 5 произошда ошибка: {ex.Message}");
-                                pr.Save();
-                            }
+                                try
+                                {
+                                    db.AddExhibit(name, era1);
+                                    Console.WriteLine("Экспонат успешно добавлен");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"{ex.Message}");
+                                    protocoler.WriteLine($"В функции 5 произошда ошибка: {ex.Message}");
+                                    protocoler.Save();
+                                }
                             
-                            break;
+                                break;
 
-                        case "2":
-                            Console.WriteLine("Добаление пометителя");
+                            case "2":
+                                Console.WriteLine("Добаление пометителя");
 
-                            name = UserInput.StringInput("Введите полное имя посетителя: ");
-                            int age1 = UserInput.intInput(true, "Введите возраст: ");
-                            string city1 = UserInput.StringInput("Введите город: "); 
+                                name = UserInput.StringInput("Введите полное имя посетителя: ");
+                                int age1 = UserInput.IntInput(true, "Введите возраст: ");
+                                string city1 = UserInput.StringInput("Введите город: "); 
                             
-                            try 
-                            { 
-                                db.AddVisitor(name, age1, city1);
-                                Console.WriteLine("Посетитель успешно добавлен");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"{ex.Message}");
+                                try 
+                                { 
+                                    db.AddVisitor(name, age1, city1);
+                                    Console.WriteLine("Посетитель успешно добавлен");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"{ex.Message}");
 
-                                pr.WriteLine($"В функции 5 произошда ошибка: {ex.Message}");
-                                pr.Save();
-                            }
-                            break;
+                                    protocoler.WriteLine($"В функции 5 произошда ошибка: {ex.Message}");
+                                    protocoler.Save();
+                                }
+                                break;
 
-                        case "3":
-                            Console.WriteLine("Добаление билета");
+                            case "3":
+                                Console.WriteLine("Добаление билета");
 
-                            int id1 = UserInput.intInput(true, "Введите id экспоната: ");
-                            int id2 = UserInput.intInput(true, "Введите id посетителя: ");
-                            int price = UserInput.intInput(true, "Введите цену билета: ");
+                                int id1 = UserInput.IntInput(true, "Введите id экспоната: ");
+                                int id2 = UserInput.IntInput(true, "Введите id посетителя: ");
+                                int price = UserInput.IntInput(true, "Введите цену билета: ");
 
-                            try
-                            {
-                                db.AddTicket(id1, id2, DateTime.Now, price);
-                                Console.WriteLine("Билет успешно добавлен");
+                                try
+                                {
+                                    db.AddTicket(id1, id2, DateTime.Now, price);
+                                    Console.WriteLine("Билет успешно добавлен");
 
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"{ex.Message}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"{ex.Message}");
 
-                                pr.WriteLine($"В функции 5 произошда ошибка: {ex.Message}");
-                                pr.Save();
-                            }
-                            break;
+                                    protocoler.WriteLine($"В функции 5 произошда ошибка: {ex.Message}");
+                                    protocoler.Save();
+                                }
+                                break;
 
-                        default:
-                            Console.WriteLine("Введенное значение не является параметром!");
-                            break;
-                    }
+                            default:
+                                Console.WriteLine("Введенное значение не является параметром!");
+                                break;
+                        }
 
-                    Console.WriteLine();
-                    break;
+                        Console.WriteLine();
+                        break;
 
-                case "6":
-                    Console.WriteLine("Функция 6");
-                    Console.WriteLine();
+                    case "6":
+                        Console.WriteLine("Функция 6");
+                        Console.WriteLine();
 
-                    pr.WriteLine("Вызвана функция 6");
-                    pr.Save();
+                        protocoler.WriteLine("Вызвана функция 6");
+                        protocoler.Save();
 
-                    int idExhibit = UserInput.intInput(true, "Введите id экспоната: ");
+                        int idExhibit = UserInput.IntInput(true, "Введите id экспоната: ");
 
-                    DateTime begin = UserInput.DateTimeInput("Введите дату 1: ");
-                    DateTime end = UserInput.DateTimeInput("Введите дату 2: ");
+                        DateTime begin = UserInput.DateTimeInput("Введите дату 1: ");
+                        DateTime end = UserInput.DateTimeInput("Введите дату 2: ");
 
-                    int a = db.Request1(idExhibit, begin, end);
-                    Console.WriteLine($"Суммарная выручка = {a}");
+                        int a = db.Request1(idExhibit, begin, end);
+                        Console.WriteLine($"Суммарная выручка = {a}");
 
-                    Console.WriteLine();
-                    break;
+                        Console.WriteLine();
+                        break;
 
-                case "7":
-                    Console.WriteLine("Функция 7");
-                    Console.WriteLine();
+                    case "7":
+                        Console.WriteLine("Функция 7");
+                        Console.WriteLine();
 
-                    pr.WriteLine("Вызвана функция 7");
-                    pr.Save();
+                        protocoler.WriteLine("Вызвана функция 7");
+                        protocoler.Save();
 
-                    string era = UserInput.StringInput("Введите название эпохи: ");
+                        string era = UserInput.StringInput("Введите название эпохи: ");
 
-                    begin = UserInput.DateTimeInput("Введите дату 1: ");
-                    end = UserInput.DateTimeInput("Введите дату 2: ");
+                        begin = UserInput.DateTimeInput("Введите дату 1: ");
+                        end = UserInput.DateTimeInput("Введите дату 2: ");
 
-                    int s1 = db.Request2(era, begin, end);
-                    Console.WriteLine($"Суммарная выручка = {s1}");
+                        int s1 = db.Request2(era, begin, end);
+                        Console.WriteLine($"Суммарная выручка = {s1}");
 
-                    Console.WriteLine();
-                    break;
+                        Console.WriteLine();
+                        break;
 
-                case "8":
-                    Console.WriteLine("Функция 8");
-                    Console.WriteLine();
+                    case "8":
+                        Console.WriteLine("Функция 8");
+                        Console.WriteLine();
 
-                    pr.WriteLine("Вызвана функция 8");
-                    pr.Save();
+                        protocoler.WriteLine("Вызвана функция 8");
+                        protocoler.Save();
 
-                    idExhibit = UserInput.intInput(true, "Введите id экспоната: ");
+                        idExhibit = UserInput.IntInput(true, "Введите id экспоната: ");
 
-                    string city = UserInput.StringInput("Введите название города: ");
+                        string city = UserInput.StringInput("Введите название города: ");
 
-                    begin = UserInput.DateTimeInput("Введите дату 1: ");
-                    end = UserInput.DateTimeInput("Введите дату 2: ");
+                        begin = UserInput.DateTimeInput("Введите дату 1: ");
+                        end = UserInput.DateTimeInput("Введите дату 2: ");
 
-                    var visitors = db.Request3(idExhibit, city, begin, end);
+                        var visitors = db.Request3(idExhibit, city, begin, end);
 
-                    Console.WriteLine("Результат: ");
-                    foreach ( var visitor in visitors)
-                    {
-                        Console.WriteLine(visitor);
-                    }
+                        Console.WriteLine("Результат: ");
+                        foreach ( var visitor in visitors)
+                        {
+                            Console.WriteLine(visitor);
+                        }
 
-                    Console.WriteLine();
-                    break;
+                        Console.WriteLine();
+                        break;
 
-                case "9":
-                    Console.WriteLine("Функция 9");
-                    Console.WriteLine();
+                    case "9":
+                        Console.WriteLine("Функция 9");
+                        Console.WriteLine();
 
-                    pr.WriteLine("Вызвана функция 9");
-                    pr.Save();
+                        protocoler.WriteLine("Вызвана функция 9");
+                        protocoler.Save();
 
-                    int age = UserInput.intInput(true, "Введите возраст: ");
+                        int age = UserInput.IntInput(true, "Введите возраст: ");
 
-                    era = UserInput.StringInput("Введите эпоху: ");
+                        era = UserInput.StringInput("Введите эпоху: ");
 
-                    var k = db.Request4(age, era);
+                        var k = db.Request4(age, era);
 
-                    Console.WriteLine("Результат: ");
-                    foreach (var visitor in k)
-                    {
-                        Console.WriteLine(visitor);
-                    }
+                        Console.WriteLine("Результат: ");
+                        foreach (var visitor in k)
+                        {
+                            Console.WriteLine(visitor);
+                        }
 
-                    Console.WriteLine();
-                    break;
+                        Console.WriteLine();
+                        break;
 
-                case "10":
-                    pr.WriteLine("Программа завершена");
-                    pr.Close();
-                    return;
+                    case "10":
+                        protocoler.WriteLine("Программа завершена");
+                        protocoler.Close();
+                        return;
 
-                case "11":
-                    Console.Clear();
+                    case "11":
+                        Console.Clear();
 
-                    pr.WriteLine("Консоль очищена");
-                    pr.Save();
-                    break;
+                        protocoler.WriteLine("Консоль очищена");
+                        protocoler.Save();
+                        break;
 
-                case "12":
-                    db.Save();
-                    break;
+                    case "12":
+                        db.Save();
+                        break;
 
-                default:
-                    Console.WriteLine("Введенное значение не является номером функции!");
-                    Console.WriteLine();
-                    break;
+                    default:
+                        Console.WriteLine("Введенное значение не является номером функции!");
+                        Console.WriteLine();
+                        break;
+                }
             }
         }
     }
