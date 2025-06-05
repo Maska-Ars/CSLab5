@@ -335,7 +335,6 @@ namespace CSLab5
         /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request1/*'/>
         public int Request1(int idExhibit, DateTime? begin = null, DateTime? end = null)
         {
-            // Запрос для получения суммарной выручки за данный период от одного экспоната
             if (begin == null)
                 begin = new DateTime(1970, 1, 1);
             if (end == null)
@@ -354,7 +353,6 @@ namespace CSLab5
         /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request2/*'/>
         public int Request2(string era, DateTime? begin = null, DateTime? end = null)
         {
-            // Запрос для получение суммарной выручки от экспонатов казанной эры, за указанный промежуток времени
             if (begin == null)
                 begin = new DateTime(1970, 1, 1);
             if (end == null)
@@ -374,9 +372,6 @@ namespace CSLab5
         /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request3/*'/>
         public IEnumerable<object> Request3(int idExhibit, string city, DateTime? begin = null, DateTime? end = null)
         {
-            // Запрос на полчение информации о песетителях, посетивших данный экспонат,
-            // из указанного города
-            // за указанный промежуток
             if (begin == null)
                 begin = new DateTime(1970, 1, 1);
             if (end == null)

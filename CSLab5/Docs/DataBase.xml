@@ -14,32 +14,32 @@
 		</Constructor>
 		<DeleteExhibitById>
 			<summary>
-				Метод для удаления экспоната из базы данных 
+				Метод для удаления экспоната из базы данных .
 			</summary>
 			<param name="id">id экспоната</param>
 		</DeleteExhibitById>
 		<DeleteVisitorById>
 			<summary>
-				Метод для удаления посетителя из базы данных
+				Метод для удаления посетителя из базы данных.
 			</summary>
 			<param name="id">id посетителя</param>
 		</DeleteVisitorById>
 		<DeleteTicketById>
 			<summary>
-				Метод для удаления билета из базы данных
+				Метод для удаления билета из базы данных.
 			</summary>
 			<param name="id">id билета</param>
 		</DeleteTicketById>
 		<DeleteObjectById>
 			<summary>
-				Метод для удаления объекта из базы данных
+				Метод для удаления объекта из базы данных.
 			</summary>
 			<param name="idTable">id таблицы из которой необходимо удалить объект</param>
 			<param name="id">id объекта</param>
 		</DeleteObjectById>
 		<UpdateExhibitById>
 			<summary>
-				Метод для обновления информации о экспонате в базе данных
+				Метод для обновления информации о экспонате в базе данных.
 			</summary>
 			<param name="id">id экспоната</param>
 			<param name="attributeName">Название обновляемого поля</param>
@@ -47,7 +47,7 @@
 		</UpdateExhibitById>
 		<UpdateVisitorById>
 			<summary>
-				Метод для обновления информации о посетителе в базе данных
+				Метод для обновления информации о посетителе в базе данных.
 			</summary>
 			<param name="id">id посетителя</param>
 			<param name="attributeName">Название обновляемого поля</param>
@@ -55,7 +55,7 @@
 		</UpdateVisitorById>
 		<UpdateTicketById>
 			<summary>
-				Метод для обновления информации о билете в базе данных
+				Метод для обновления информации о билете в базе данных.
 			</summary>
 			<param name="id">id билета</param>
 			<param name="attributeName">Название обновляемого поля</param>
@@ -63,13 +63,101 @@
 		</UpdateTicketById>
 		<UpdateObjectbyId>
 			<summary>
-				Метод для обновления информации об объекте в базе данных
+				Метод для обновления информации об объекте в базе данных.
 			</summary>
 			<param name="idTable">id таблицы(0 - экспонаты, 1 - посетители, 2 - билеты)</param>
 			<param name="id">id объекта</param>
 			<param name="attributeName">Название обновляемого поля</param>
 			<param name="newValue">Новое значение</param>
 		</UpdateObjectbyId>
+		<AddExhibit>
+			<summary>
+				Метод для добавления экспоната в базу данных.
+			</summary>
+			<param name="name">Название экспоната</param>
+			<param name="era">Эпоха экспоната</param>
+		</AddExhibit>
+		<AddVisitor>
+			<summary>
+				Метод для добавления посетителя в базу данных.
+			</summary>
+			<param name="name">Имя посетителя</param>
+			<param name="age">Возраст посетителя</param>
+			<param name="city">Город проживания посетителя</param>
+		</AddVisitor>
+		<AddTicket>
+			<summary>
+				Метод для добавления билета в базу данных.
+			</summary>
+			<param name="idExhibit">id экспоната</param>
+			<param name="idVisitor">id посетителя</param>
+			<param name="time">время посещения</param>
+			<param name="price">Цена билета</param>
+		</AddTicket>
+		<Request1>
+			<summary>
+				Запрос для получения суммарной выручки за заданный период от одного экспоната.
+			</summary>
+			<param name="idExhibit">id экспоната</param>
+			<param name="begin">Дата начала. Если не указана, используется 01.01.1970</param>
+			<param name="end">Дата окончания. Если не указана, используется текущая дата.</param>
+			<returns>
+				Суммарная выручка за заданный период от одного экспоната.
+			</returns>
+		</Request1>
+		<Request2>
+			<summary>
+				Запрос для получения суммарной выручки от экспонатов указанной эры, за указанный промежуток времени.
+			</summary>
+			<param name="era">Название эпохи</param>
+			<param name="begin">Дата начала. Если не указана, используется 01.01.1970</param>
+			<param name="end">Дата окончания. Если не указана, используется текущая дата.</param>
+			<returns>
+				Суммарная выручка от экспонатов указанной эры, за указанный промежуток времени.
+			</returns>
+		</Request2>
+		<Request3>
+			<summary>
+				Запрос на получение информации о песетителях, посетивших заданный экспонат,из указанного города, за указанный промежуток времени.
+			</summary>
+			<param name="idExhibit">id экспоната</param>
+			<param name="city">Город проживания посетителей</param>
+			<param name="begin">Дата начала. Если не указана, используется 01.01.1970</param>
+			<param name="end">Дата окончания. Если не указана, используется текущая дата.</param>
+			<returns>
+				Перечисление анонимных объектов, каждый из которых содержит следующие свойства:
+				<para>- idTicket: id билета (int).</para>
+				<para>- name: Имя посетителя (string).</para>
+				<para>- age: Возраст посетителя (int).</para>
+				<para>- price: Цена билета (decimal).</para>
+			</returns>
+		</Request3>
+		<Request4>
+			<summary>
+				Запрос на получение id, имен, времени посещения экспонатов данной эпохи, посетителями заданного возраста
+			</summary>
+			<param name="age">Возраст посетителей</param>
+			<param name="era">Название эпохи</param>
+			<returns>
+				Перечисление анонимных объектов, каждый из которых содержит следующие свойства:
+				<para>- name: Имя посетителя (string).</para>
+				<para>- idTicket: id билета (int).</para>
+				<para>- date: Дата посещения (DateTime).</para>
+			</returns>
+		</Request4>
+		<Save>
+			<summary>
+				Метод для сохранения изменений в базе данных.
+			</summary>
+		</Save>
+		<ToString>
+			<summary>
+				Записывает в строку содержимое всех таблиц.
+			</summary>
+			<returns>
+				Многострочная строка с содержимым всех таблиц.
+			</returns>
+		</ToString>
 	</members>
 </Docs>
 
