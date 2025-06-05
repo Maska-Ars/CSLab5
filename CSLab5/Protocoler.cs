@@ -1,10 +1,12 @@
 ﻿namespace CSLab5 
 {
+    /// <include file='Docs/Protocoler.xml' path='Docs/members[@name="protocoler"]/Protocoler/*'/>
     class Protocoler
     {
-        private string _file;
+        private readonly string _file;
         private StreamWriter _sw;
 
+        /// <include file='Docs/Protocoler.xml' path='Docs/members[@name="protocoler"]/Constructor/*'/>
         public Protocoler(string file = "Protocol.txt")
         {
             if (!File.Exists(file))
@@ -17,20 +19,17 @@
             _sw = new StreamWriter(file, true);
         }
 
-        public void WriteLine(string s)
-        {
-            _sw.WriteLine($"{DateTime.Now} - {s}");
-        }
+        /// <include file='Docs/Protocoler.xml' path='Docs/members[@name="protocoler"]/WriteLine/*'/>
+        public void WriteLine(string s) => _sw.WriteLine($"{DateTime.Now} - {s}");
 
+        /// <include file='Docs/Protocoler.xml' path='Docs/members[@name="protocoler"]/Save/*'/>
         public void Save()
         {
             _sw.Close();
             _sw = new StreamWriter(_file, true);
         }
 
-        public void Close()
-        {
-            _sw.Close();
-        }
+        /// <include file='Docs/Protocoler.xml' path='Docs/members[@name="protocoler"]/Close/*'/>
+        public void Close() => _sw.Close();
     }
 }

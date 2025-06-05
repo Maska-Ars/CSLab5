@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Docs>
+	<members name="userinput">
+		<UserInput>
+			<summary>
+				Класс, содержащий различные статичные методы для ввода с клавиатуры.
+			</summary>
+		</UserInput>
+		<StringInput>
+			<summary>
+				Метод для обработки ввода строки
+			</summary>
+			<param name="prompt">Строка выводимая при вводе.</param>
+			<returns>
+				Введенная пользователем строка.
+			</returns>
+		</StringInput>
+		<IntInput>
+			<summary>
+				Метод для обработки ввода целого числа
+			</summary>
+			<param name="isPositive">Флаг указывающий на возможность ввода отрицательных чисел</param>
+			<param name="prompt">Строка выводимая при вводе.</param>
+			<returns>
+				Введенное пользователем целое число.
+			</returns>
+		</IntInput>
+		<DateTimeInput>
+			<summary>
+				Метод для обработки ввода даты
+			</summary>
+			<param name="prompt">Строка выводимая при вводе.</param>
+			<returns>
+				Введенная пользователем дата.
+			</returns>
+		</DateTimeInput>
+	</members>
+</Docs>
+

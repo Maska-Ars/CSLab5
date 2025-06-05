@@ -3,19 +3,21 @@ using System;
 
 namespace CSLab5
 {
+    /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DataBase/*'/>
     class DataBase
     {
-        private string _file;
+        private readonly string _file;
+        private readonly List<Exhibit> _exhibits;
+        private readonly List<Visitor> _visitors;
+        private readonly List<Ticket> _tickets;
 
-        private List<Exhibit> _exhibits;
-        private List<Visitor> _visitors;
-        private List<Ticket> _tickets;
-
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/File/*'/>
         public string File
         {
             get { return _file; }
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Constructor/*'/>
         public DataBase(string file)
         {
             _file = file;
@@ -80,7 +82,8 @@ namespace CSLab5
             }
         }
 
-        public void DelExhibitById(int id)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteExhibitById/*'/>
+        public void DeleteExhibitById(int id)
         {
             var tic = from Ticket t in _tickets
                       where t.IdExhibit == id
@@ -88,7 +91,7 @@ namespace CSLab5
 
             foreach (var t in tic)
             {
-                this.DelTickettById(t.Id);
+                this.DeleteTicketById(t.Id);
             }
 
             var exs = from Exhibit e in _exhibits
@@ -110,7 +113,8 @@ namespace CSLab5
 
         }
 
-        public void DelVisitorById(int id)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteVisitorById/*'/>
+        public void DeleteVisitorById(int id)
         {
             var tic = from Ticket t in _tickets
                       where t.IdVisitor == id
@@ -118,7 +122,7 @@ namespace CSLab5
 
             foreach (var t in tic)
             {
-                this.DelTickettById(t.Id);
+                this.DeleteTicketById(t.Id);
             }
 
             var exs = from Visitor e in _visitors
@@ -140,7 +144,8 @@ namespace CSLab5
 
         }
 
-        public void DelTickettById(int id)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteTickettById/*'/>
+        public void DeleteTicketById(int id)
         {
             var exs = from Ticket e in _tickets
                       where id == e.Id
@@ -161,7 +166,8 @@ namespace CSLab5
 
         }
 
-        public void DelElById(int idTable, int id)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteObjectById/*'/>
+        public void DeleteObjectById(int idTable, int id)
         {
             if (idTable < 0 || idTable > 2)
                 throw new Exception($"таблицы с id '{idTable}' не существеут");
@@ -169,20 +175,21 @@ namespace CSLab5
             switch (id)
             {
                 case 0:
-                    DelExhibitById(id);
+                    DeleteExhibitById(id);
                     break;
                 case 1:
-                    DelVisitorById(id);
+                    DeleteVisitorById(id);
                     break;
                 case 2:
-                    DelTickettById(id);
+                    DeleteTicketById(id);
                     break;
             }
 
             Save();
         }
 
-        public void UpdateExhibitById(int id, string AttributeName, string newValue)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateExhibitById/*'/>
+        public void UpdateExhibitById(int id, string attributeName, string newValue)
         {
             var exs = from Exhibit e in _exhibits
                       where id == e.Id
@@ -192,7 +199,7 @@ namespace CSLab5
 
             Exhibit ex = exs.First();
 
-            switch (AttributeName)
+            switch (attributeName)
             {
                 case "name":
                     ex.Name = newValue;
@@ -201,12 +208,13 @@ namespace CSLab5
                     ex.Era = newValue;
                     break;
                 default:
-                    throw new Exception($"атрибут с названием = {AttributeName} не существеут");
+                    throw new Exception($"атрибут с названием = {attributeName} не существеут");
             }
 
         }
 
-        public void UpdateVisitorById(int id, string AttributeName, string newValue)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateVisitorById/*'/>
+        public void UpdateVisitorById(int id, string attributeName, string newValue)
         {
             var exs = from Visitor e in _visitors
                       where id == e.Id
@@ -216,7 +224,7 @@ namespace CSLab5
 
             Visitor ex = exs.First();
 
-            switch (AttributeName)
+            switch (attributeName)
             {
                 case "name":
                     ex.Name = newValue;
@@ -228,12 +236,13 @@ namespace CSLab5
                     ex.City = newValue;
                     break;
                 default:
-                    throw new Exception($"атрибут с названием = {AttributeName} не существеут");
+                    throw new Exception($"атрибут с названием = {attributeName} не существеут");
             }
 
         }
 
-        public void UpdateTicketById(int id, string AttributeName, string newValue)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateTicketById/*'/>
+        public void UpdateTicketById(int id, string attributeName, string newValue)
         {
             var exs = from Ticket e in _tickets
                       where id == e.Id
@@ -243,7 +252,7 @@ namespace CSLab5
 
             Ticket ex = exs.First();
 
-            switch (AttributeName)
+            switch (attributeName)
             {
                 case "idExhibit":
                     ex.IdExhibit = Convert.ToInt32(newValue);
@@ -258,12 +267,13 @@ namespace CSLab5
                     ex.Time = Convert.ToDateTime(newValue);
                     break;
                 default:
-                    throw new Exception($"атрибут с названием = {AttributeName} не существеут");
+                    throw new Exception($"атрибут с названием = {attributeName} не существеут");
             }
 
         }
 
-        public void UpdateElbyId(int idTable, int id, string attributeName, string newValue)
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateObjectbyId/*'/>
+        public void UpdateObjectbyId(int idTable, int id, string attributeName, string newValue)
         {
             if (idTable < 0 || idTable > 2)
                 throw new Exception($"таблицы с id '{idTable}' не существеут");
@@ -284,6 +294,7 @@ namespace CSLab5
             Save();
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/AddExhibit/*'/>
         public void AddExhibit(string name, string era)
         {
             _exhibits.Add(new Exhibit(
@@ -294,6 +305,7 @@ namespace CSLab5
             Save();
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/AddVisitor/*'/>
         public void AddVisitor(string name, int age, string city)
         {
             _visitors.Add(new Visitor(
@@ -306,6 +318,7 @@ namespace CSLab5
 
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/AddTicket/*'/>
         public void AddTicket(int idExhibit, int idVisitor, DateTime time, int price)
         {
             _tickets.Add(new Ticket(
@@ -319,6 +332,7 @@ namespace CSLab5
 
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request1/*'/>
         public int Request1(int idExhibit, DateTime? begin = null, DateTime? end = null)
         {
             // Запрос для получения суммарной выручки за данный период от одного экспоната
@@ -337,6 +351,7 @@ namespace CSLab5
             return prices.Sum();
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request2/*'/>
         public int Request2(string era, DateTime? begin = null, DateTime? end = null)
         {
             // Запрос для получение суммарной выручки от экспонатов казанной эры, за указанный промежуток времени
@@ -356,6 +371,7 @@ namespace CSLab5
             return prices.Sum();
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request3/*'/>
         public IEnumerable<object> Request3(int idExhibit, string city, DateTime? begin = null, DateTime? end = null)
         {
             // Запрос на полчение информации о песетителях, посетивших данный экспонат,
@@ -366,46 +382,46 @@ namespace CSLab5
             if (end == null)
                 end = DateTime.Today;
 
-            var people = from Ticket rT in _tickets
-                         join Exhibit rEx in _exhibits on rT.IdExhibit equals rEx.Id
-                         join Visitor rV in _visitors on rT.IdVisitor equals rV.Id
-                         where
-                            rEx.Id == idExhibit
-                            && rV.City == city
-                            && rT.Time >= begin
-                            && rT.Time <= end
-                         select new
-                         {
-                             idTicket = rT.Id,
-                             name = rV.Name,
-                             age = rV.Age,
-                             price = rT.Price
-                         };
-            return people;
+            return from Ticket rT in _tickets
+                   join Exhibit rEx in _exhibits on rT.IdExhibit equals rEx.Id
+                   join Visitor rV in _visitors on rT.IdVisitor equals rV.Id
+                   where
+                      rEx.Id == idExhibit
+                      && rV.City == city
+                      && rT.Time >= begin
+                      && rT.Time <= end
+                   select new
+                   {
+                       idTicket = rT.Id,
+                       name = rV.Name,
+                       age = rV.Age,
+                       price = rT.Price
+                   };
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request4/*'/>
         public IEnumerable<object> Request4(int age, string era)
         {
             // запрос на получение id, имен, времени посещения экспонатов данной эпохи, посетителями данного возраста
-            var people = from Ticket rT in _tickets
-                         join Exhibit rEx in _exhibits on rT.IdExhibit equals rEx.Id
-                         join Visitor rV in _visitors on rT.IdVisitor equals rV.Id
-                         where
-                            rV.Age == age
-                            && rEx.Era == era
-                         select new
-                         {
-                             name = rV.Name,
-                             idTicket = rT.Id,
-                             date = rT.Time
-                         };
-            return people;
+            return from Ticket rT in _tickets
+                   join Exhibit rEx in _exhibits on rT.IdExhibit equals rEx.Id
+                   join Visitor rV in _visitors on rT.IdVisitor equals rV.Id
+                   where
+                      rV.Age == age
+                      && rEx.Era == era
+                   select new
+                   {
+                       name = rV.Name,
+                       idTicket = rT.Id,
+                       date = rT.Time
+                   };
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Save/*'/>
         public void Save()
         {
 
-            Workbook wb = new Workbook(_file);
+            Workbook wb = new(_file);
 
             Worksheet ws = wb.Worksheets[0];
 
@@ -489,6 +505,7 @@ namespace CSLab5
 
         }
 
+        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/ToString/*'/>
         public override string ToString()
         {
             string s = "";

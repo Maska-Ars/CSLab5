@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Docs>
+	<members name="protocoler">
+		<Protocoler>
+			<summary>
+				Класс, реализующий ведение протокола действий.
+			</summary>
+		</Protocoler>
+		<Constructor>
+			<summary>
+				Инициализирует новый экземпляр класса <see cref="Protocoler"/>.
+			</summary>
+			<param name="file">Путь к файлу, для записи протокола</param>
+		</Constructor>
+		<WriteLine>
+			<summary>
+				Метод для записи строки в протокол.
+			</summary>
+			<param name="s">Строка, необходимая для записи.</param>
+		</WriteLine>
+		<Save>
+			<summary>
+				Метод для сохранения протокола.
+			</summary>
+		</Save>
+		<Close>
+			<summary>
+				Метод для закрытия протокола.
+			</summary>
+		</Close>
+	</members>
+</Docs>
+
+

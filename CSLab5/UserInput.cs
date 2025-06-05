@@ -1,5 +1,7 @@
-﻿class UserInput
+﻿/// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/UserInput/*'/>
+class UserInput
 {
+    /// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/StringInput/*'/>
     public static string StringInput(string prompt = "Введите строку: ")
     {
         string? userInput;
@@ -22,6 +24,7 @@
         return userInput;
     }
 
+    /// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/IntInput/*'/>
     public static int IntInput(bool isPositive = false, string prompt = "Введите целое число: ")
     {
         string? userInput;
@@ -52,6 +55,7 @@
         return result;
     }
 
+    /// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/DateTimeInput/*'/>
     public static DateTime DateTimeInput(string prompt = "Введите дату: ")
     {
         DateTime result;

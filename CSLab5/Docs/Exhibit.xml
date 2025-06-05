@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Docs>
+	<members name="exhibit">
+		<Exhibit>
+			<summary>
+				Класс, представляющий экспонат музея
+			</summary>
+		</Exhibit>
+		<Id>
+			<summary>
+				Получает и устанавливает id экспоната.
+			</summary>
+		</Id>
+		<Name>
+			<summary>
+				Получает и устанавливает название экспоната.
+			</summary>
+		</Name>
+		<Era>
+			<summary>
+				Получает и устанавливает эпоху экспоната.
+			</summary>
+		</Era>
+		<ToString>
+			<summary>
+				Преобразует класс Exhibit к строке.
+			</summary>
+			<returns>
+				Строка, представляющая экспонат в формате "id = [id], name = [name], era = [era]".
+			</returns>
+		</ToString>
+	</members>
+</Docs>

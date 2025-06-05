@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Docs>
+	<members name="ticket">
+		<Ticket>
+			<summary>
+				Класс, представляющий билет в музей
+			</summary>
+		</Ticket>
+		<Id>
+			<summary>
+				Получает и устанавливает id билета.
+			</summary>
+		</Id>
+		<IdExhibit>
+			<summary>
+				Получает и устанавливает id экспоната.
+			</summary>
+		</IdExhibit>
+		<IdVisitor>
+			<summary>
+				Получает и устанавливает id посетителя.
+			</summary>
+		</IdVisitor>
+		<Time>
+			<summary>
+				Получает и устанавливает время экскурсии.
+			</summary>
+		</Time>
+		<Price>
+			<summary>
+				Получает и устанавливает цену билета.
+			</summary>
+		</Price>
+		<ToString>
+			<summary>
+				Преобразует класс Ticket к строке.
+			</summary>
+			<returns>
+				Строка, представляющая билет в формате "id = [id], idEx = [idExhibit], idV = [idVisitor], time = [время], price = [цена]".
+			</returns>
+		</ToString>
+	</members>
+</Docs>

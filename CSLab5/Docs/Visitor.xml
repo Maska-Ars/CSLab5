@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Docs>
+	<members name="visitor">
+		<Visitor>
+			<summary>
+				Класс, представляющий посетителя музея
+			</summary>
+		</Visitor>
+		<Id>
+			<summary>
+				Получает и устанавливает id посетителя.
+			</summary>
+		</Id>
+		<Name>
+			<summary>
+				Получает и устанавливает имя посетителя.
+			</summary>
+		</Name>
+		<Age>
+			<summary>
+				Получает и устанавливает возраст посетителя.
+			</summary>
+		</Age>
+		<City>
+			<summary>
+				Получает и устанавливает город проживания посетителя.
+			</summary>
+		</City>
+		<ToString>
+			<summary>
+				Преобразует класс Visitor к строке.
+			</summary>
+			<returns>
+				Строка, представляющая объект в формате "id = [id], name = [name], age = [age], city = [city]".
+			</returns>
+		</ToString>
+	</members>
+</Docs>

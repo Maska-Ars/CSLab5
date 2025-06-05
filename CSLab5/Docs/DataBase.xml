@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Docs>
+	<members name="database">
+		<DataBase>
+			<summary>
+				Класс, реализующий логику работы с базой данных, представленной в виде xls-файла.
+			</summary>
+		</DataBase>
+		<Constructor>
+			<summary>
+				Инициализирует новый экземпляр класса <see cref="DataBase"/>.
+			</summary>
+			<param name="file"> xls-файл с 3 листами(Экспонаты, посетители, билеты)</param>
+		</Constructor>
+		<DeleteExhibitById>
+			<summary>
+				Метод для удаления экспоната из базы данных 
+			</summary>
+			<param name="id">id экспоната</param>
+		</DeleteExhibitById>
+		<DeleteVisitorById>
+			<summary>
+				Метод для удаления посетителя из базы данных
+			</summary>
+			<param name="id">id посетителя</param>
+		</DeleteVisitorById>
+		<DeleteTicketById>
+			<summary>
+				Метод для удаления билета из базы данных
+			</summary>
+			<param name="id">id билета</param>
+		</DeleteTicketById>
+		<DeleteObjectById>
+			<summary>
+				Метод для удаления объекта из базы данных
+			</summary>
+			<param name="idTable">id таблицы из которой необходимо удалить объект</param>
+			<param name="id">id объекта</param>
+		</DeleteObjectById>
+		<UpdateExhibitById>
+			<summary>
+				Метод для обновления информации о экспонате в базе данных
+			</summary>
+			<param name="id">id экспоната</param>
+			<param name="attributeName">Название обновляемого поля</param>
+			<param name="newValue">Новое значение</param>
+		</UpdateExhibitById>
+		<UpdateVisitorById>
+			<summary>
+				Метод для обновления информации о посетителе в базе данных
+			</summary>
+			<param name="id">id посетителя</param>
+			<param name="attributeName">Название обновляемого поля</param>
+			<param name="newValue">Новое значение</param>
+		</UpdateVisitorById>
+		<UpdateTicketById>
+			<summary>
+				Метод для обновления информации о билете в базе данных
+			</summary>
+			<param name="id">id билета</param>
+			<param name="attributeName">Название обновляемого поля</param>
+			<param name="newValue">Новое значение</param>
+		</UpdateTicketById>
+		<UpdateObjectbyId>
+			<summary>
+				Метод для обновления информации об объекте в базе данных
+			</summary>
+			<param name="idTable">id таблицы(0 - экспонаты, 1 - посетители, 2 - билеты)</param>
+			<param name="id">id объекта</param>
+			<param name="attributeName">Название обновляемого поля</param>
+			<param name="newValue">Новое значение</param>
+		</UpdateObjectbyId>
+	</members>
+</Docs>
+

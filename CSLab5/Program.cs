@@ -114,7 +114,7 @@
 
                         try
                         {
-                            db.DelElById(table, id);
+                            db.DeleteObjectById(table, id);
                             Console.WriteLine("Элемент успешно удален из базы данных");
                         }
                         catch (Exception ex)
@@ -145,7 +145,7 @@
 
                         try
                         {
-                            db.UpdateElbyId(table, id, attr, val);
+                            db.UpdateObjectbyId(table, id, attr, val);
                             Console.WriteLine("Элемент успешно изменен в базе данных");
                         }
                         catch (Exception ex)
