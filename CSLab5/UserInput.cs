@@ -1,7 +1,8 @@
 ﻿/// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/UserInput/*'/>
 class UserInput
 {
-    /// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/StringInput/*'/>
+    /// <include file='Docs/UserInput.xml' 
+    /// path='Docs/members[@name="userinput"]/StringInput/*'/>
     public static string StringInput(string prompt = "Введите строку: ")
     {
         string? userInput;
@@ -24,7 +25,8 @@ class UserInput
         return userInput;
     }
 
-    /// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/IntInput/*'/>
+    /// <include file='Docs/UserInput.xml' 
+    /// path='Docs/members[@name="userinput"]/IntInput/*'/>
     public static int IntInput(bool isPositive = false, string prompt = "Введите целое число: ")
     {
         string? userInput;
@@ -55,7 +57,8 @@ class UserInput
         return result;
     }
 
-    /// <include file='Docs/UserInput.xml' path='Docs/members[@name="userinput"]/DateTimeInput/*'/>
+    /// <include file='Docs/UserInput.xml' 
+    /// path='Docs/members[@name="userinput"]/DateTimeInput/*'/>
     public static DateTime DateTimeInput(string prompt = "Введите дату: ")
     {
         DateTime result;

@@ -3,7 +3,8 @@ using System;
 
 namespace CSLab5
 {
-    /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DataBase/*'/>
+    /// <include file='Docs/DataBase.xml' 
+    /// path='Docs/members[@name="database"]/DataBase/*'/>
     class DataBase
     {
         private readonly string _file;
@@ -11,13 +12,15 @@ namespace CSLab5
         private readonly List<Visitor> _visitors;
         private readonly List<Ticket> _tickets;
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/File/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/File/*'/>
         public string File
         {
             get { return _file; }
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Constructor/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/Constructor/*'/>
         public DataBase(string file)
         {
             _file = file;
@@ -82,96 +85,98 @@ namespace CSLab5
             }
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteExhibitById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/DeleteExhibitById/*'/>
         public void DeleteExhibitById(int id)
         {
-            var tic = from Ticket t in _tickets
+            var tickets = from Ticket t in _tickets
                       where t.IdExhibit == id
                       select t;
 
-            foreach (var t in tic)
+            foreach (var t in tickets)
             {
-                this.DeleteTicketById(t.Id);
+                DeleteTicketById(t.Id);
             }
 
-            var exs = from Exhibit e in _exhibits
+            var exhibits = from Exhibit e in _exhibits
                       where id == e.Id
                       select e;
-            if (!exs.Any())
+            if (!exhibits.Any())
                 throw new Exception($"экспоната с id = {id} не существеут");
 
             _exhibits.Remove(_exhibits.First());
 
-            exs = from Exhibit e in _exhibits
+            exhibits = from Exhibit e in _exhibits
                   where id < e.Id
                   select e;
 
-            foreach (Exhibit e in exs)
+            foreach (Exhibit e in exhibits)
             {
                 e.Id--;
             }
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteVisitorById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/DeleteVisitorById/*'/>
         public void DeleteVisitorById(int id)
         {
-            var tic = from Ticket t in _tickets
+            var tickets = from Ticket t in _tickets
                       where t.IdVisitor == id
                       select t;
 
-            foreach (var t in tic)
+            foreach (var t in tickets)
             {
-                this.DeleteTicketById(t.Id);
+                DeleteTicketById(t.Id);
             }
 
-            var exs = from Visitor e in _visitors
+            var visitors = from Visitor e in _visitors
                       where id == e.Id
                       select e;
-            if (!exs.Any())
+            if (!visitors.Any())
                 throw new Exception($"посетителя с id = {id} не существеут");
 
             _exhibits.Remove(_exhibits.First());
 
-            exs = from Visitor e in _visitors
+            visitors = from Visitor e in _visitors
                   where id < e.Id
                   select e;
 
-            foreach (Visitor e in exs)
+            foreach (Visitor e in visitors)
             {
                 e.Id--;
             }
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteTickettById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/DeleteTickettById/*'/>
         public void DeleteTicketById(int id)
         {
-            var exs = from Ticket e in _tickets
+            var tickets = from Ticket e in _tickets
                       where id == e.Id
                       select e;
-            if (!exs.Any())
+
+            if (!tickets.Any())
                 throw new Exception($"билета с id = {id} не существеут");
 
             _exhibits.Remove(_exhibits.First());
 
-            exs = from Ticket e in _tickets
+            tickets = from Ticket e in _tickets
                   where id < e.Id
                   select e;
 
-            foreach (Ticket e in exs)
+            foreach (Ticket e in tickets)
             {
                 e.Id--;
             }
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/DeleteObjectById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/DeleteObjectById/*'/>
         public void DeleteObjectById(int idTable, int id)
         {
-            if (idTable < 0 || idTable > 2)
-                throw new Exception($"таблицы с id '{idTable}' не существеут");
-
             switch (id)
             {
                 case 0:
@@ -183,21 +188,25 @@ namespace CSLab5
                 case 2:
                     DeleteTicketById(id);
                     break;
+                default:
+                    throw new Exception($"таблицы с id '{idTable}' не существеут");
             }
 
             Save();
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateExhibitById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/UpdateExhibitById/*'/>
         public void UpdateExhibitById(int id, string attributeName, string newValue)
         {
-            var exs = from Exhibit e in _exhibits
+            var exhibits = from Exhibit e in _exhibits
                       where id == e.Id
                       select e;
-            if (!exs.Any())
+            
+            if (!exhibits.Any())
                 throw new Exception($"экспоната с id = {id} не существеут");
 
-            Exhibit ex = exs.First();
+            Exhibit ex = exhibits.First();
 
             switch (attributeName)
             {
@@ -208,21 +217,23 @@ namespace CSLab5
                     ex.Era = newValue;
                     break;
                 default:
-                    throw new Exception($"атрибут с названием = {attributeName} не существеут");
+                    throw new Exception($"атрибут с названием = {attributeName} не существуют");
             }
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateVisitorById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/UpdateVisitorById/*'/>
         public void UpdateVisitorById(int id, string attributeName, string newValue)
         {
-            var exs = from Visitor e in _visitors
+            var visitors = from Visitor e in _visitors
                       where id == e.Id
                       select e;
-            if (!exs.Any())
+            
+            if (!visitors.Any())
                 throw new Exception($"посетителя с id = {id} не существеут");
 
-            Visitor ex = exs.First();
+            Visitor ex = visitors.First();
 
             switch (attributeName)
             {
@@ -241,16 +252,18 @@ namespace CSLab5
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateTicketById/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/UpdateTicketById/*'/>
         public void UpdateTicketById(int id, string attributeName, string newValue)
         {
-            var exs = from Ticket e in _tickets
+            var tickets = from Ticket e in _tickets
                       where id == e.Id
                       select e;
-            if (!exs.Any())
+
+            if (!tickets.Any())
                 throw new Exception($"экспоната с id = {id} не существеут");
 
-            Ticket ex = exs.First();
+            Ticket ex = tickets.First();
 
             switch (attributeName)
             {
@@ -272,12 +285,11 @@ namespace CSLab5
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/UpdateObjectbyId/*'/>
-        public void UpdateObjectbyId(int idTable, int id, string attributeName, string newValue)
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/UpdateObjectbyId/*'/>
+        public void UpdateObjectbyId(int idTable, int id, 
+            string attributeName, string newValue)
         {
-            if (idTable < 0 || idTable > 2)
-                throw new Exception($"таблицы с id '{idTable}' не существеут");
-
             switch (idTable)
             {
                 case 0:
@@ -289,12 +301,15 @@ namespace CSLab5
                 case 2:
                     UpdateTicketById(id, attributeName, newValue);
                     break;
+                default:
+                    throw new Exception($"таблицы с id '{idTable}' не существеут");
             }
 
             Save();
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/AddExhibit/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/AddExhibit/*'/>
         public void AddExhibit(string name, string era)
         {
             _exhibits.Add(new Exhibit(
@@ -302,10 +317,12 @@ namespace CSLab5
                 name,
                 era
                 ));
+
             Save();
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/AddVisitor/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/AddVisitor/*'/>
         public void AddVisitor(string name, int age, string city)
         {
             _visitors.Add(new Visitor(
@@ -314,12 +331,15 @@ namespace CSLab5
                 age,
                 city
                 ));
+
             Save();
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/AddTicket/*'/>
-        public void AddTicket(int idExhibit, int idVisitor, DateTime time, int price)
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/AddTicket/*'/>
+        public void AddTicket(int idExhibit, int idVisitor, 
+            DateTime time, int price)
         {
             _tickets.Add(new Ticket(
                 _tickets[-1].Id + 1,
@@ -328,12 +348,15 @@ namespace CSLab5
                 time,
                 price
                 ));
+
             Save();
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request1/*'/>
-        public int Request1(int idExhibit, DateTime? begin = null, DateTime? end = null)
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/Request1/*'/>
+        public int Request1(int idExhibit, 
+            DateTime? begin = null, DateTime? end = null)
         {
             if (begin == null)
                 begin = new DateTime(1970, 1, 1);
@@ -350,8 +373,10 @@ namespace CSLab5
             return prices.Sum();
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request2/*'/>
-        public int Request2(string era, DateTime? begin = null, DateTime? end = null)
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/Request2/*'/>
+        public int Request2(string era, 
+            DateTime? begin = null, DateTime? end = null)
         {
             if (begin == null)
                 begin = new DateTime(1970, 1, 1);
@@ -369,8 +394,10 @@ namespace CSLab5
             return prices.Sum();
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request3/*'/>
-        public IEnumerable<object> Request3(int idExhibit, string city, DateTime? begin = null, DateTime? end = null)
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/Request3/*'/>
+        public IEnumerable<object> Request3(int idExhibit, string city, 
+            DateTime? begin = null, DateTime? end = null)
         {
             if (begin == null)
                 begin = new DateTime(1970, 1, 1);
@@ -394,10 +421,10 @@ namespace CSLab5
                    };
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Request4/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/Request4/*'/>
         public IEnumerable<object> Request4(int age, string era)
         {
-            // запрос на получение id, имен, времени посещения экспонатов данной эпохи, посетителями данного возраста
             return from Ticket rT in _tickets
                    join Exhibit rEx in _exhibits on rT.IdExhibit equals rEx.Id
                    join Visitor rV in _visitors on rT.IdVisitor equals rV.Id
@@ -412,7 +439,8 @@ namespace CSLab5
                    };
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/Save/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/Save/*'/>
         public void Save()
         {
 
@@ -420,9 +448,9 @@ namespace CSLab5
 
             Worksheet ws = wb.Worksheets[0];
 
-            Style s1 = ws.Cells.Rows[1][0].GetDisplayStyle();
-            Style s2 = ws.Cells.Rows[1][1].GetDisplayStyle();
-            Style s3 = ws.Cells.Rows[1][2].GetDisplayStyle();
+            Style fisrtColumnStyle = ws.Cells.Rows[1][0].GetDisplayStyle();
+            Style secondColumnStyle = ws.Cells.Rows[1][1].GetDisplayStyle();
+            Style thirdColumStyle = ws.Cells.Rows[1][2].GetDisplayStyle();
 
             ws.Cells.DeleteRows(1, ws.Cells.Rows.Count - 1);
 
@@ -431,48 +459,48 @@ namespace CSLab5
             {
                 ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
 
-                ws.Cells.Rows[^1][0].SetStyle(s1);
+                ws.Cells.Rows[^1][0].SetStyle(fisrtColumnStyle);
                 ws.Cells.Rows[^1][0].PutValue(e.Id);
 
-                ws.Cells.Rows[^1][1].SetStyle(s2);
+                ws.Cells.Rows[^1][1].SetStyle(secondColumnStyle);
                 ws.Cells.Rows[^1][1].PutValue(e.Name);
 
-                ws.Cells.Rows[^1][2].SetStyle(s3);
+                ws.Cells.Rows[^1][2].SetStyle(thirdColumStyle);
                 ws.Cells.Rows[^1][2].PutValue(e.Era);
 
             }
 
             ws = wb.Worksheets[1];
-            s1 = ws.Cells.Rows[1][0].GetDisplayStyle();
-            s2 = ws.Cells.Rows[1][1].GetDisplayStyle();
-            s3 = ws.Cells.Rows[1][2].GetDisplayStyle();
-            Style s4 = ws.Cells.Rows[1][3].GetDisplayStyle();
+            fisrtColumnStyle = ws.Cells.Rows[1][0].GetDisplayStyle();
+            secondColumnStyle = ws.Cells.Rows[1][1].GetDisplayStyle();
+            thirdColumStyle = ws.Cells.Rows[1][2].GetDisplayStyle();
+            Style fourthColumStyle = ws.Cells.Rows[1][3].GetDisplayStyle();
             ws.Cells.DeleteRows(1, ws.Cells.Rows.Count - 1);
 
             foreach (Visitor e in _visitors)
             {
                 ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
 
-                ws.Cells.Rows[^1][0].SetStyle(s1);
+                ws.Cells.Rows[^1][0].SetStyle(fisrtColumnStyle);
                 ws.Cells.Rows[^1][0].PutValue(e.Id);
 
-                ws.Cells.Rows[^1][1].SetStyle(s2);
+                ws.Cells.Rows[^1][1].SetStyle(secondColumnStyle);
                 ws.Cells.Rows[^1][1].PutValue(e.Name);
 
-                ws.Cells.Rows[^1][2].SetStyle(s3);
+                ws.Cells.Rows[^1][2].SetStyle(thirdColumStyle);
                 ws.Cells.Rows[^1][2].PutValue(e.Age);
 
-                ws.Cells.Rows[^1][3].SetStyle(s4);
+                ws.Cells.Rows[^1][3].SetStyle(fourthColumStyle);
                 ws.Cells.Rows[^1][3].PutValue(e.City);
             }
 
             ws = wb.Worksheets[2];
 
-            s1 = ws.Cells.Rows[1][0].GetDisplayStyle();
-            s2 = ws.Cells.Rows[1][1].GetDisplayStyle();
-            s3 = ws.Cells.Rows[1][2].GetDisplayStyle();
-            s4 = ws.Cells.Rows[1][3].GetDisplayStyle();
-            Style s5 = ws.Cells.Rows[1][4].GetDisplayStyle();
+            fisrtColumnStyle = ws.Cells.Rows[1][0].GetDisplayStyle();
+            secondColumnStyle = ws.Cells.Rows[1][1].GetDisplayStyle();
+            thirdColumStyle = ws.Cells.Rows[1][2].GetDisplayStyle();
+            fourthColumStyle = ws.Cells.Rows[1][3].GetDisplayStyle();
+            Style fifthColumStyle = ws.Cells.Rows[1][4].GetDisplayStyle();
 
             ws.Cells.DeleteRows(1, ws.Cells.Rows.Count - 1);
 
@@ -480,19 +508,19 @@ namespace CSLab5
             {
                 ws.Cells.InsertRow(ws.Cells.MaxDataRow + 1);
 
-                ws.Cells.Rows[^1][0].SetStyle(s1);
+                ws.Cells.Rows[^1][0].SetStyle(fisrtColumnStyle);
                 ws.Cells.Rows[^1][0].PutValue(e.Id);
 
-                ws.Cells.Rows[^1][1].SetStyle(s2);
+                ws.Cells.Rows[^1][1].SetStyle(secondColumnStyle);
                 ws.Cells.Rows[^1][1].PutValue(e.IdExhibit);
 
-                ws.Cells.Rows[^1][2].SetStyle(s3);
+                ws.Cells.Rows[^1][2].SetStyle(thirdColumStyle);
                 ws.Cells.Rows[^1][2].PutValue(e.IdVisitor);
 
-                ws.Cells.Rows[^1][3].SetStyle(s4);
+                ws.Cells.Rows[^1][3].SetStyle(fourthColumStyle);
                 ws.Cells.Rows[^1][3].PutValue(e.Time);
 
-                ws.Cells.Rows[^1][4].SetStyle(s5);
+                ws.Cells.Rows[^1][4].SetStyle(fifthColumStyle);
                 ws.Cells.Rows[^1][4].PutValue(e.Price);
             }
 
@@ -500,24 +528,26 @@ namespace CSLab5
 
         }
 
-        /// <include file='Docs/DataBase.xml' path='Docs/members[@name="database"]/ToString/*'/>
+        /// <include file='Docs/DataBase.xml' 
+        /// path='Docs/members[@name="database"]/ToString/*'/>
         public override string ToString()
         {
             string s = "";
 
             int[] maxLength = new int[3];
 
-            var k = from Exhibit e in _exhibits
+            var lengths = from Exhibit e in _exhibits
                     select e.Id.ToString().Length;
-            maxLength[0] = k.Max();
 
-            k = from Exhibit e in _exhibits
+            maxLength[0] = lengths.Max();
+
+            lengths = from Exhibit e in _exhibits
                 select e.Name.Length;
-            maxLength[1] = k.Max();
+            maxLength[1] = lengths.Max();
 
-            k = from Exhibit e in _exhibits
+            lengths = from Exhibit e in _exhibits
                 select e.Era.Length;
-            maxLength[2] = k.Max();
+            maxLength[2] = lengths.Max();
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
                 s += "-";
@@ -564,21 +594,21 @@ namespace CSLab5
 
             maxLength = new int[4];
 
-            k = from Visitor e in _visitors
+            lengths = from Visitor e in _visitors
                 select e.Id.ToString().Length;
-            maxLength[0] = k.Max();
+            maxLength[0] = lengths.Max();
 
-            k = from Visitor e in _visitors
+            lengths = from Visitor e in _visitors
                 select e.Name.Length;
-            maxLength[1] = k.Max();
+            maxLength[1] = lengths.Max();
 
-            k = from Visitor e in _visitors
+            lengths = from Visitor e in _visitors
                 select e.Age.ToString().Length;
-            maxLength[2] = k.Max();
+            maxLength[2] = lengths.Max();
 
-            k = from Visitor e in _visitors
+            lengths = from Visitor e in _visitors
                 select e.City.Length;
-            maxLength[3] = k.Max();
+            maxLength[3] = lengths.Max();
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
                 s += "-";
@@ -623,32 +653,32 @@ namespace CSLab5
                 s += $"{space}{e.City} |";
                 s += "\n";
             }
+
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
                 s += "-";
             s += "\n";
 
-
             maxLength = new int[5];
 
-            k = from Ticket e in _tickets
+            lengths = from Ticket e in _tickets
                 select e.Id.ToString().Length;
-            maxLength[0] = k.Max();
+            maxLength[0] = lengths.Max();
 
-            k = from Ticket e in _tickets
+            lengths = from Ticket e in _tickets
                 select e.IdExhibit.ToString().Length;
-            maxLength[1] = k.Max();
+            maxLength[1] = lengths.Max();
 
-            k = from Ticket e in _tickets
+            lengths = from Ticket e in _tickets
                 select e.IdVisitor.ToString().Length;
-            maxLength[2] = k.Max();
+            maxLength[2] = lengths.Max();
 
-            k = from Ticket e in _tickets
+            lengths = from Ticket e in _tickets
                 select e.Time.ToShortDateString().Length;
-            maxLength[3] = k.Max();
+            maxLength[3] = lengths.Max();
 
-            k = from Ticket e in _tickets
+            lengths = from Ticket e in _tickets
                 select e.Price.ToString().Length;
-            maxLength[4] = k.Max();
+            maxLength[4] = lengths.Max();
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
                 s += "-";
@@ -698,10 +728,10 @@ namespace CSLab5
                 s += $"{space}{e.Price} |";
                 s += "\n";
             }
+
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
                 s += "-";
             s += "\n";
-
 
             return s;
         }

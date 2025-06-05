@@ -6,15 +6,15 @@
         {
             Console.WriteLine("Протокол дописывать в старый файл?");
             Console.Write("1 - да: ");
-            string? fi = Console.ReadLine();
+            string? input = Console.ReadLine();
             string protocolFile = "protocol.txt";
-            if (fi != "1" || !File.Exists(protocolFile)) 
+            if (input != "1" || !File.Exists(protocolFile)) 
             {
-                bool bb = false;
+                bool allGood = false;
                 if (!File.Exists(protocolFile))
-                    Console.WriteLine("Стнадартного файла не существует.");
+                    Console.WriteLine("Стандартного файла не существует.");
 
-                while (!bb)
+                while (!allGood)
                 {
                     protocolFile = UserInput.StringInput("Введите название нового файла: ");
 
@@ -26,8 +26,8 @@
                    
                     try
                     {
-                        File.Create(protocolFile);
-                        bb = true;
+                        File.Create(protocolFile).Close();
+                        allGood = true;
                     }
                     catch (Exception ex)
                     {
@@ -41,34 +41,42 @@
             protocoler.WriteLine("Программа запущенна");
             protocoler.Save();
         
-            DataBase db = new("LR5-var3.xls");
+            DataBase dataBase = new("LR5-var3.xls");
         
             bool userContinue = true;
             while (userContinue) 
             {
                 Console.WriteLine("Главное меню");
-                Console.WriteLine($"Текущий файл: {db.File}");
+                Console.WriteLine($"Текущий файл: {dataBase.File}");
                 Console.WriteLine("Функции:");
                 Console.WriteLine("1 - Чтение базы данных из excel файла");
                 Console.WriteLine("2 - Просмотр базы данных");
                 Console.WriteLine("3 - Удаление элемента по ключу");
                 Console.WriteLine("4 - Корректировка элемента по ключу");
                 Console.WriteLine("5 - Добавление элемента");
-                Console.WriteLine("6 - Запрос для получения суммарной выручки за указанный период от указанного экспоната");
-                Console.WriteLine("7 - Запрос для получение суммарной выручки от экспонатов казанной эры, за указанный промежуток времени");
+
+                Console.WriteLine("6 - Запрос для получения суммарной выручки" +
+                    " за указанный период от указанного экспоната");
+
+                Console.WriteLine("7 - Запрос для получение суммарной выручки" +
+                    " от экспонатов казанной эры, за указанный промежуток времени");
+
                 Console.WriteLine(
                     "8 - Запрос на полчение информации о песетителях, посетивших указанный экспонат, " +
                     "из указанного города, за указанный промежуток времени"
                     );
-                Console.WriteLine("9 - Запрос на получение информации о посетителях указанного возраста, посетивших указанный экспонат");
+
+                Console.WriteLine("9 - Запрос на получение информации о посетителях указанного возраста," +
+                    " посетивших указанный экспонат");
+
                 Console.WriteLine("10 - Выход из программы");
                 Console.WriteLine("11 - Очистить консоль");
                 Console.WriteLine("12 - Сохранение базы данных");
                 Console.WriteLine();
-                Console.Write("Введите номер функции: ");
-                string? userInput = Console.ReadLine();
 
-                switch (userInput)
+                Console.Write("Введите номер функции: ");
+
+                switch (Console.ReadLine())
                 {
                     case "1":
                         Console.WriteLine("функция 1");
@@ -79,7 +87,7 @@
                         string file = UserInput.StringInput("Введите путь к файлу: ");
                         try
                         {
-                            db = new DataBase(file);
+                            dataBase = new DataBase(file);
                             Console.WriteLine("База данных успешно прочитана");
                         }
                         catch (Exception ex) 
@@ -95,7 +103,7 @@
 
                     case "2":
                         Console.WriteLine("База данных: ");
-                        Console.WriteLine(db);
+                        Console.WriteLine(dataBase);
 
                         protocoler.WriteLine("Вызвана функция 2");
                         protocoler.Save();
@@ -114,7 +122,7 @@
 
                         try
                         {
-                            db.DeleteObjectById(table, id);
+                            dataBase.DeleteObjectById(table, id);
                             Console.WriteLine("Элемент успешно удален из базы данных");
                         }
                         catch (Exception ex)
@@ -145,7 +153,7 @@
 
                         try
                         {
-                            db.UpdateObjectbyId(table, id, attr, val);
+                            dataBase.UpdateObjectbyId(table, id, attr, val);
                             Console.WriteLine("Элемент успешно изменен в базе данных");
                         }
                         catch (Exception ex)
@@ -184,7 +192,7 @@
 
                                 try
                                 {
-                                    db.AddExhibit(name, era1);
+                                    dataBase.AddExhibit(name, era1);
                                     Console.WriteLine("Экспонат успешно добавлен");
                                 }
                                 catch (Exception ex)
@@ -205,7 +213,7 @@
                             
                                 try 
                                 { 
-                                    db.AddVisitor(name, age1, city1);
+                                    dataBase.AddVisitor(name, age1, city1);
                                     Console.WriteLine("Посетитель успешно добавлен");
                                 }
                                 catch (Exception ex)
@@ -226,7 +234,7 @@
 
                                 try
                                 {
-                                    db.AddTicket(id1, id2, DateTime.Now, price);
+                                    dataBase.AddTicket(id1, id2, DateTime.Now, price);
                                     Console.WriteLine("Билет успешно добавлен");
 
                                 }
@@ -259,7 +267,7 @@
                         DateTime begin = UserInput.DateTimeInput("Введите дату 1: ");
                         DateTime end = UserInput.DateTimeInput("Введите дату 2: ");
 
-                        int a = db.Request1(idExhibit, begin, end);
+                        int a = dataBase.Request1(idExhibit, begin, end);
                         Console.WriteLine($"Суммарная выручка = {a}");
 
                         Console.WriteLine();
@@ -277,7 +285,7 @@
                         begin = UserInput.DateTimeInput("Введите дату 1: ");
                         end = UserInput.DateTimeInput("Введите дату 2: ");
 
-                        int s1 = db.Request2(era, begin, end);
+                        int s1 = dataBase.Request2(era, begin, end);
                         Console.WriteLine($"Суммарная выручка = {s1}");
 
                         Console.WriteLine();
@@ -297,7 +305,7 @@
                         begin = UserInput.DateTimeInput("Введите дату 1: ");
                         end = UserInput.DateTimeInput("Введите дату 2: ");
 
-                        var visitors = db.Request3(idExhibit, city, begin, end);
+                        var visitors = dataBase.Request3(idExhibit, city, begin, end);
 
                         Console.WriteLine("Результат: ");
                         foreach ( var visitor in visitors)
@@ -319,7 +327,7 @@
 
                         era = UserInput.StringInput("Введите эпоху: ");
 
-                        var k = db.Request4(age, era);
+                        var k = dataBase.Request4(age, era);
 
                         Console.WriteLine("Результат: ");
                         foreach (var visitor in k)
@@ -343,7 +351,7 @@
                         break;
 
                     case "12":
-                        db.Save();
+                        dataBase.Save();
                         break;
 
                     default:
