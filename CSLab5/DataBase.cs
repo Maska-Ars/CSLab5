@@ -383,13 +383,13 @@ namespace CSLab5
             if (end == null)
                 end = DateTime.Today;
 
-            var prices = from Ticket r1 in _tickets
-                         join Exhibit r2 in _exhibits on r1.IdExhibit equals r2.Id
+            var prices = from Ticket rT in _tickets
+                         join Exhibit rEx in _exhibits on rT.IdExhibit equals rEx.Id
                          where
-                            r2.Era == era
-                            && r1.Time >= begin
-                            && r1.Time <= end
-                         select r1.Price;
+                            rEx.Era == era
+                            && rT.Time >= begin
+                            && rT.Time <= end
+                         select rT.Price;
 
             return prices.Sum();
         }
@@ -532,7 +532,7 @@ namespace CSLab5
         /// path='Docs/members[@name="database"]/ToString/*'/>
         public override string ToString()
         {
-            string s = "";
+            string output = "";
 
             int[] maxLength = new int[3];
 
@@ -550,46 +550,46 @@ namespace CSLab5
             maxLength[2] = lengths.Max();
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
-            s += "|";
+            output += "|";
             for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Экспонаты".Length) / 2; j++)
-                s += " ";
+                output += " ";
 
-            s += "Экспонаты";
+            output += "Экспонаты";
 
             for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Экспонаты".Length) / 2 - 1; j++)
-                s += " ";
-            s += "|";
-            s += "\n";
+                output += " ";
+            output += "|";
+            output += "\n";
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
             foreach (Exhibit e in _exhibits)
             {
-                s += "|";
+                output += "|";
                 string space = "";
                 for (int l = 0; l < maxLength[0] - e.Id.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.Id} |";
+                output += $"{space}{e.Id} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[1] - e.Name.Length; l++)
                     space += " ";
-                s += $"{space}{e.Name} |";
+                output += $"{space}{e.Name} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[2] - e.Era.Length; l++)
                     space += " ";
-                s += $"{space}{e.Era} |";
-                s += "\n";
+                output += $"{space}{e.Era} |";
+                output += "\n";
             }
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
 
             maxLength = new int[4];
@@ -611,52 +611,52 @@ namespace CSLab5
             maxLength[3] = lengths.Max();
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
-            s += "|";
+            output += "|";
             for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Посетители".Length) / 2; j++)
-                s += " ";
+                output += " ";
 
-            s += "Посетители";
+            output += "Посетители";
 
             for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Посетители".Length) / 2 - 1; j++)
-                s += " ";
-            s += "|";
-            s += "\n";
+                output += " ";
+            output += "|";
+            output += "\n";
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
             foreach (Visitor e in _visitors)
             {
-                s += "|";
+                output += "|";
                 string space = "";
                 for (int l = 0; l < maxLength[0] - e.Id.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.Id} |";
+                output += $"{space}{e.Id} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[1] - e.Name.Length; l++)
                     space += " ";
-                s += $"{space}{e.Name} |";
+                output += $"{space}{e.Name} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[2] - e.Age.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.Age} |";
+                output += $"{space}{e.Age} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[3] - e.City.Length; l++)
                     space += " ";
-                s += $"{space}{e.City} |";
-                s += "\n";
+                output += $"{space}{e.City} |";
+                output += "\n";
             }
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
             maxLength = new int[5];
 
@@ -681,59 +681,59 @@ namespace CSLab5
             maxLength[4] = lengths.Max();
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
-            s += "|";
+            output += "|";
             for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Билеты".Length) / 2; j++)
-                s += " ";
+                output += " ";
 
-            s += "Билеты";
+            output += "Билеты";
 
             for (int j = 0; j < (maxLength.Sum() + 3 * 2 + 3 - "Билеты".Length) / 2 - 1; j++)
-                s += " ";
-            s += "|";
-            s += "\n";
+                output += " ";
+            output += "|";
+            output += "\n";
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
             foreach (Ticket e in _tickets)
             {
-                s += "|";
+                output += "|";
                 string space = "";
                 for (int l = 0; l < maxLength[0] - e.Id.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.Id} |";
+                output += $"{space}{e.Id} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[1] - e.IdExhibit.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.IdExhibit} |";
+                output += $"{space}{e.IdExhibit} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[2] - e.IdVisitor.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.IdVisitor} |";
+                output += $"{space}{e.IdVisitor} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[3] - e.Time.ToShortDateString().Length; l++)
                     space += " ";
-                s += $"{space}{e.Time.ToShortDateString()} |";
+                output += $"{space}{e.Time.ToShortDateString()} |";
 
                 space = "";
                 for (int l = 0; l < maxLength[2] - e.Price.ToString().Length; l++)
                     space += " ";
-                s += $"{space}{e.Price} |";
-                s += "\n";
+                output += $"{space}{e.Price} |";
+                output += "\n";
             }
 
             for (int j = 0; j < maxLength.Sum() + 3 * 2 + 3; j++)
-                s += "-";
-            s += "\n";
+                output += "-";
+            output += "\n";
 
-            return s;
+            return output;
         }
     }
 }
